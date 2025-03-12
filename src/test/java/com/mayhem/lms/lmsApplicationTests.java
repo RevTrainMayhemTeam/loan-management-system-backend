@@ -1,10 +1,10 @@
-package com.mayhem.loan_management_system;
+package com.mayhem.lms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LoanManagementSystemApplicationTests {
+class lmsApplicationTests {
 
 	@Test
 	void contextLoads() {
