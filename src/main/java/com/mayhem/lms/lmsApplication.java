@@ -1,13 +1,14 @@
-package com.mayhem.loan_management_system;
+package com.mayhem.lms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LoanManagementSystemApplication {
+public class lmsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LoanManagementSystemApplication.class, args);
+		SpringApplication.run(lmsApplication.class, args);
+		//idk this is my branch
 	}
 
 }
