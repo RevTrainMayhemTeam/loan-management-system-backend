@@ -1,20 +1,11 @@
 package com.mayhem.lms.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Set;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "account")
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
@@ -28,8 +19,59 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
-    private AccountRole roles;
+    private AccountRole role;
 
     @OneToOne(mappedBy = "accountId", cascade = CascadeType.ALL)
     private User user;
+
+    public Account() {
+    }
+
+    public Account(Long id, String email, String password, AccountRole roles, User user) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = roles;
+        this.user = user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public AccountRole getRoles() {
+        return role;
+    }
+
+    public void setRoles(AccountRole roles) {
+        this.role = roles;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

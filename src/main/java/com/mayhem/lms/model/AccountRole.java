@@ -1,18 +1,9 @@
 package com.mayhem.lms.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "account_role")
 public class AccountRole {
@@ -26,4 +17,37 @@ public class AccountRole {
 
     @OneToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     private Set<Account> accounts = new HashSet<>();
+
+    public AccountRole() {
+    }
+
+    public AccountRole(Long id, String roleName, Set<Account> accounts) {
+        this.id = id;
+        this.roleName = roleName;
+        this.accounts = accounts;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public Set<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
+    }
 }
