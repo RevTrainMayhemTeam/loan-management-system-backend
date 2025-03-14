@@ -6,6 +6,8 @@ import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -27,5 +29,9 @@ public class UserService {
         user.setPhone(newUser.getPhoneNumber());
 
         userRepository.save(user);
+    }
+
+    public List<User> findAllUsers(){
+        return userRepository.findAll();
     }
 }

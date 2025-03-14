@@ -1,9 +1,12 @@
 package com.mayhem.lms.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "account_role")
 public class AccountRole {
@@ -15,7 +18,7 @@ public class AccountRole {
     @Column(name = "role_name", nullable = false, unique = true,  length = 50)
     private String roleName;
 
-    @OneToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<Account> accounts = new HashSet<>();
 
     public AccountRole() {
