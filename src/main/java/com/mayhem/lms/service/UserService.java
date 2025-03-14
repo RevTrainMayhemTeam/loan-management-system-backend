@@ -5,11 +5,11 @@ import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
+import java.util.Optional;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService{
 
     private final UserRepository userRepository;
 
@@ -22,7 +22,6 @@ public class UserService {
         account.setEmail(newUser.getEmail());
         account.setPassword(newUser.getPassword());
 
-
         User user = new User();
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
@@ -34,4 +33,10 @@ public class UserService {
     public List<User> findAllUsers(){
         return userRepository.findAll();
     }
+
+    public Optional<User> getUserById(Long id){
+        return userRepository.findById(id);
+    }
+
+
 }
