@@ -1,7 +1,7 @@
 package com.mayhem.lms.controller;
 
-import com.mayhem.lms.model.User;
-import com.mayhem.lms.service.UserService;
+import com.mayhem.lms.dto.GetUserDto;
+import com.mayhem.lms.service.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,14 +13,14 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<GetUserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 

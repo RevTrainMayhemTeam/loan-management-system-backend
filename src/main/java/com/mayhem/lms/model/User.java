@@ -27,7 +27,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false)
-    private Account accountId;
+    private Account account;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private List<Loan> loans = new ArrayList<>();
@@ -35,12 +35,12 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String phone, Account accountId, List<Loan> loans) {
+    public User(Long id, String firstName, String lastName, String phone, Account account, List<Loan> loans) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.accountId = accountId;
+        this.account = account;
         this.loans = loans;
     }
 
@@ -76,12 +76,12 @@ public class User {
         this.phone = phone;
     }
 
-    public Account getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(Account accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account accountId) {
+        this.account = accountId;
     }
 
     public List<Loan> getLoans() {

@@ -1,13 +1,9 @@
 package com.mayhem.lms.service;
 
+import com.mayhem.lms.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public interface AuthService {
 
-    private final UserService userService;
-
-    public AuthService(UserService userService) {
-        this.userService = userService;
-    }
 }
