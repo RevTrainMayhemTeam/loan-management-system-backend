@@ -8,7 +8,6 @@ public class LmsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LmsApplication.class, args);
-		//idk this is my branch
 	}
 
 }
