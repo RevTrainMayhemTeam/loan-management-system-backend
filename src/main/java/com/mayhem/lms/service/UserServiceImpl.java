@@ -20,13 +20,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(RegisterDto newUser, Account account) {
+    public GetUserDto createUser(RegisterDto newUser, Account account) {
         User user = new User();
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
         user.setPhone(newUser.getPhoneNumber());
         user.setAccount(account);
-        return userRepository.save(user);
+        User createdUser = userRepository.save(user);
+        return new GetUserDto(
+                account.getEmail(),
+                createdUser.getFirstName(),
+                createdUser.getLastName(),
+                createdUser.getPhone(),
+                account.getRole().getRoleName()
+        );
     }
 
     @Override

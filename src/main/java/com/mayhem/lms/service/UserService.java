@@ -11,6 +11,6 @@ import java.util.List;
 
 @Service
 public interface UserService {
-    public User createUser(RegisterDto newUser, Account account);
+    public GetUserDto createUser(RegisterDto newUser, Account account);
     public List<GetUserDto> findAllUsers();
 }
