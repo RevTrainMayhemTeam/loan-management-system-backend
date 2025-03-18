@@ -24,7 +24,7 @@ public class Account {
     @JoinColumn(name = "role_id", nullable = false)
     private AccountRole role;
 
-    @OneToOne(mappedBy = "accountId", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private User user;
 
     public Account() {
@@ -62,12 +62,12 @@ public class Account {
         this.password = password;
     }
 
-    public AccountRole getRoles() {
+    public AccountRole getRole() {
         return role;
     }
 
-    public void setRoles(AccountRole roles) {
-        this.role = roles;
+    public void setRole(AccountRole role) {
+        this.role = role;
     }
 
     public User getUser() {

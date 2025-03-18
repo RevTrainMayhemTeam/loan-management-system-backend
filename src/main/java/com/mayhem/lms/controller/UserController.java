@@ -1,37 +1,50 @@
 package com.mayhem.lms.controller;
 
+import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.User;
-import com.mayhem.lms.service.UserService;
+import com.mayhem.lms.service.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<GetUserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserByID(@PathVariable Long id){
-        Optional<User> foundedUser = userService.getUserById(id);
-        if(foundedUser.isEmpty()){
+    public ResponseEntity<GetUserDto> getUserByID(@PathVariable Long id){
+        GetUserDto foundUser = userService.getUserById(id);
+        if(foundUser == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(foundedUser);
+        return ResponseEntity.ok(foundUser);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        /*Ask team if we should let user update their email, if so then create a Dto for that*/
+        GetUserDto updatedUser = userService.updateUser(id, userDetails);
+        if(updatedUser == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUserProfile(@PathVariable Long id) {
+        boolean deleted = userService.deleteUser(id);
+        return deleted ? ResponseEntity.ok("User successfully deleted") : ResponseEntity.notFound().build();
+    }
 }
