@@ -3,7 +3,6 @@ package com.mayhem.lms.controller;
 import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
-import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.AccountServiceImpl;
 import com.mayhem.lms.service.UserServiceImpl;
 import org.springframework.http.HttpStatus;
