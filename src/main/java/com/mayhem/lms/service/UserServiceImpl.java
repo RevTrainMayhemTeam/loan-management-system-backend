@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         }
         return usersDto;
     }
+
     @Override
     public GetUserDto getUserById(Long id){
         User foundUser = userRepository.findById(id).orElse(null);
