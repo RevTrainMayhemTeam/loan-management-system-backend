@@ -22,8 +22,8 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Column(name = "phone", length = 10)
-    private String phone;
+    @Column(name = "phone_number", length = 10)
+    private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "account_id", nullable = false)
@@ -35,11 +35,11 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String phone, Account account, List<Loan> loans) {
+    public User(Long id, String firstName, String lastName, String phoneNumber, Account account, List<Loan> loans) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.account = account;
         this.loans = loans;
     }
@@ -68,12 +68,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Account getAccount() {

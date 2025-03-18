@@ -24,14 +24,14 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
-        user.setPhone(newUser.getPhoneNumber());
+        user.setPhoneNumber(newUser.getPhoneNumber());
         user.setAccount(account);
         User createdUser = userRepository.save(user);
         return new GetUserDto(
                 account.getEmail(),
                 createdUser.getFirstName(),
                 createdUser.getLastName(),
-                createdUser.getPhone(),
+                createdUser.getPhoneNumber(),
                 account.getRole().getRoleName()
         );
     }
@@ -45,10 +45,52 @@ public class UserServiceImpl implements UserService {
                     user.getAccount().getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
-                    user.getPhone(),
+                    user.getPhoneNumber(),
                     user.getAccount().getRole().getRoleName()
             ));
         }
         return usersDto;
+    }
+    @Override
+    public GetUserDto getUserById(Long id){
+        User foundUser = userRepository.findById(id).orElse(null);
+        if (foundUser!=null){
+            return new GetUserDto(
+                    foundUser.getAccount().getEmail(),
+                    foundUser.getFirstName(),
+                    foundUser.getLastName(),
+                    foundUser.getPhoneNumber(),
+                    foundUser.getAccount().getRole().getRoleName()
+            );
+        } else return null;
+    }
+
+    @Override
+    public GetUserDto updateUser(Long id, User userDetails) {
+        User existingUser = userRepository.findById(id).orElse(null);
+        if (existingUser != null){
+            existingUser.setFirstName(userDetails.getFirstName());
+            existingUser.setLastName(userDetails.getLastName());
+            existingUser.setPhoneNumber(userDetails.getPhoneNumber());
+            userRepository.save(existingUser);
+            User updatedUser = userRepository.findById(id).orElse(null);
+            if (updatedUser != null){
+                return new GetUserDto(
+                        updatedUser.getAccount().getEmail(),
+                        updatedUser.getFirstName(),
+                        updatedUser.getLastName(),
+                        updatedUser.getPhoneNumber(),
+                        updatedUser.getAccount().getRole().getRoleName()
+                );
+            } else return null;
+        } else return null;
+    }
+
+    @Override
+    public boolean deleteUser(Long id){
+        return userRepository.findById(id).map(profile -> {
+            userRepository.delete(profile);
+            return true;
+        }).orElse(false);
     }
 }

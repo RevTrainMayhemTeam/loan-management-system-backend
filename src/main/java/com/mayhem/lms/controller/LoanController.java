@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
+    private final LoanServiceImpl loanServiceImpl;
 
-    private final LoanServiceImpl loanService;
-
-    public LoanController(LoanServiceImpl loanService) {
-        this.loanService = loanService;
+    public LoanController(LoanServiceImpl loanServiceImpl) {
+        this.loanServiceImpl = loanServiceImpl;
     }
 }
