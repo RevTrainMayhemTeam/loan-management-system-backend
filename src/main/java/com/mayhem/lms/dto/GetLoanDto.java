@@ -2,19 +2,21 @@ package com.mayhem.lms.dto;
 
 public class GetLoanDto {
     private Long loanId;
-    private Float amount;
+    private Double amount;
     private Integer term;
     private String type;
+    private String status;
     private String clientName;
 
     public GetLoanDto() {
     }
 
-    public GetLoanDto(Long loanId, Float amount, Integer term, String type, String clientName) {
+    public GetLoanDto(Long loanId, Double amount, Integer term, String type, String status, String clientName) {
         this.loanId = loanId;
         this.amount = amount;
         this.term = term;
         this.type = type;
+        this.status = status;
         this.clientName = clientName;
     }
 
@@ -26,11 +28,11 @@ public class GetLoanDto {
         this.loanId = loanId;
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -48,6 +50,14 @@ public class GetLoanDto {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getClientName() {
