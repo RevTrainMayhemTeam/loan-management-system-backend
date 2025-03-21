@@ -1,23 +1,21 @@
 package com.mayhem.lms.dto;
 
-public class RegisterDto {
+public class GetUserDto {
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private Integer roleId;
+    private String role;
 
-    public RegisterDto() {
+    public GetUserDto() {
     }
 
-    public RegisterDto(String email, String password, String firstName, String lastName, String phoneNumber, Integer roleId) {
+    public GetUserDto(String email, String firstName, String lastName, String phoneNumber, String role) {
         this.email = email;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.roleId = roleId;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -26,14 +24,6 @@ public class RegisterDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {
@@ -60,11 +50,11 @@ public class RegisterDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -1,9 +1,8 @@
 package com.mayhem.lms.service;
 
+import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
 
-import java.util.Optional;
-
 public interface AccountService {
-    Optional<Account> findAccountById(Long id);
+    public Account createAccount(RegisterDto newAccount);
 }
