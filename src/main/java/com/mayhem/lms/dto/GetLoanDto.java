@@ -1,6 +1,7 @@
 package com.mayhem.lms.dto;
 
 public class GetLoanDto {
+    private Long loanId;
     private Float amount;
     private Integer term;
     private String type;
@@ -9,11 +10,20 @@ public class GetLoanDto {
     public GetLoanDto() {
     }
 
-    public GetLoanDto(Float amount, Integer term, String type, String clientName) {
+    public GetLoanDto(Long loanId, Float amount, Integer term, String type, String clientName) {
+        this.loanId = loanId;
         this.amount = amount;
         this.term = term;
         this.type = type;
         this.clientName = clientName;
+    }
+
+    public Long getLoanId() {
+        return loanId;
+    }
+
+    public void setLoanId(Long loanId) {
+        this.loanId = loanId;
     }
 
     public Float getAmount() {
