@@ -23,10 +23,14 @@ public class LoanController {
     /**
      * @json
      * {
-     *     "amount": 1,
-     *     "term": 1,
-     *     "type": "PERSONAL",
-     *     "status": "APPROVED",
+     *     "amount": 33.44,
+     *     "term": 2,
+     *     "loanTypes": {
+     *         "id": 3
+     *     },
+     *     "loanStatus": {
+     *         "id": 3
+     *     }
      * }
      * @param id
      * @param loanDetails
