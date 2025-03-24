@@ -1,6 +1,6 @@
 package com.mayhem.lms.controller;
 
-import com.mayhem.lms.dto.GetUserDto;
+import com.mayhem.lms.dto.UserDto;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetUserDto>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetUserDto> getUserByID(@PathVariable Long id){
-        GetUserDto foundUser = userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserByID(@PathVariable Long id){
+        UserDto foundUser = userService.getUserById(id);
         if(foundUser == null){
             return ResponseEntity.notFound().build();
         }
@@ -33,9 +33,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         /*Ask team if we should let user update their email, if so then create a Dto for that*/
-        GetUserDto updatedUser = userService.updateUser(id, userDetails);
+        UserDto updatedUser = userService.updateUser(id, userDetails);
         if(updatedUser == null){
             return ResponseEntity.notFound().build();
         }

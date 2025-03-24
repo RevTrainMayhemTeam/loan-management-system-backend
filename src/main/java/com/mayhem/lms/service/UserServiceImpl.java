@@ -1,6 +1,6 @@
 package com.mayhem.lms.service;
 
-import com.mayhem.lms.dto.GetUserDto;
+import com.mayhem.lms.dto.UserDto;
 import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.User;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,14 +21,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserDto createUser(RegisterDto newUser, Account account) {
+    public UserDto createUser(RegisterDto newUser, Account account) {
         User user = new User();
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
         user.setPhoneNumber(newUser.getPhoneNumber());
         user.setAccount(account);
         User createdUser = userRepository.save(user);
-        return new GetUserDto(
+        return new UserDto(
+                createdUser.getId(),
                 account.getEmail(),
                 createdUser.getFirstName(),
                 createdUser.getLastName(),
@@ -37,11 +39,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUserDto> findAllUsers() {
+    public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
-        List<GetUserDto> usersDto = new ArrayList<>();
+        List<UserDto> usersDto = new ArrayList<>();
         for (User user : users) {
-            usersDto.add(new GetUserDto(
+            usersDto.add(new UserDto(
+                    user.getId(),
                     user.getAccount().getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
@@ -53,10 +56,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserDto getUserById(Long id){
+    public UserDto getUserById(Long id){
         User foundUser = userRepository.findById(id).orElse(null);
         if (foundUser!=null){
-            return new GetUserDto(
+            return new UserDto(
+                    foundUser.getId(),
                     foundUser.getAccount().getEmail(),
                     foundUser.getFirstName(),
                     foundUser.getLastName(),
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserDto updateUser(Long id, User userDetails) {
+    public UserDto updateUser(Long id, User userDetails) {
         User existingUser = userRepository.findById(id).orElse(null);
         if (existingUser != null){
             existingUser.setFirstName(userDetails.getFirstName());
@@ -76,7 +80,8 @@ public class UserServiceImpl implements UserService {
             userRepository.save(existingUser);
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
-                return new GetUserDto(
+                return new UserDto(
+                        updatedUser.getId(),
                         updatedUser.getAccount().getEmail(),
                         updatedUser.getFirstName(),
                         updatedUser.getLastName(),

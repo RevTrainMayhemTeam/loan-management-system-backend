@@ -12,4 +12,6 @@ public class LoanController {
     public LoanController(LoanServiceImpl loanServiceImpl) {
         this.loanServiceImpl = loanServiceImpl;
     }
+
+
 }

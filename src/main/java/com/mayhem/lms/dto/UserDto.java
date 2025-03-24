@@ -1,21 +1,31 @@
 package com.mayhem.lms.dto;
 
-public class GetUserDto {
+public class UserDto {
+    private Long id;
     private String email;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String role;
 
-    public GetUserDto() {
+    public UserDto() {
     }
 
-    public GetUserDto(String email, String firstName, String lastName, String phoneNumber, String role) {
+    public UserDto(Long id, String email, String firstName, String lastName, String phoneNumber, String role) {
+        this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.role = role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
