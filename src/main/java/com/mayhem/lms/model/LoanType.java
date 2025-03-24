@@ -1,5 +1,6 @@
 package com.mayhem.lms.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ public class LoanType {
     private String type;
 
     @OneToMany(mappedBy = "loanTypes", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Loan> loans = new ArrayList<>();
 
     public LoanType() {

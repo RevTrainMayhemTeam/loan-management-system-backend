@@ -1,6 +1,7 @@
 package com.mayhem.lms.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -25,10 +26,12 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)
+    @JsonManagedReference
     private LoanType loanTypes;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
+    @JsonManagedReference
     private LoanStatus loanStatus;
 
     public Loan() {
