@@ -1,11 +1,8 @@
 package com.mayhem.lms.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "loan")
 public class Loan {
@@ -22,16 +19,17 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference("user-loan")
     private User users;
 
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference("type-loan")
     private LoanType loanTypes;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference("status-loan")
     private LoanStatus loanStatus;
 
     public Loan() {

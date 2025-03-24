@@ -1,13 +1,10 @@
 package com.mayhem.lms.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "loan_status")
 public class LoanStatus {
@@ -21,6 +18,7 @@ public class LoanStatus {
     private String status;
 
     @OneToMany(mappedBy = "loanStatus", cascade = CascadeType.ALL)
+    @JsonManagedReference("status-loan")
     private List<Loan> loans = new ArrayList<>();
 
     public LoanStatus() {

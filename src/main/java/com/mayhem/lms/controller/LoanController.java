@@ -6,11 +6,12 @@ import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/loans")
+@RequestMapping(value = "/api/loans", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoanController {
     private final LoanService loanService;
 
@@ -31,7 +32,10 @@ public class LoanController {
      * @param loanDetails
      * @return
      */
-    @PutMapping({"/{id}"})
+    @PutMapping(
+            value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<UpdateLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
         UpdateLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
         if(updatedLoan == null){
