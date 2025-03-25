@@ -25,21 +25,19 @@ public class LoanController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanByID(@PathVariable Long id, HttpSession session){
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
-        GetLoanDto foundLoan = loanServiceImpl.getLoanById(id);
 
         //Checks if the user is not logged in
         if(userLogged == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
         }
+
+        //Checks if the user is a Manager
+        GetLoanDto foundLoan = loanServiceImpl.getLoanById(id, userLogged);
         //Checks if the loan exists
         if(foundLoan == null){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
         }
+        return ResponseEntity.ok(foundLoan);
 
-        //Checks if the user logged in is the same from the request or if it's a Manager - DOES NOT WORK
-        if((id.equals(userLogged.getId())) || (userLogged.getRole().equals("Manager"))){
-            return ResponseEntity.ok(foundLoan);
-        }
-        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
     }
 }

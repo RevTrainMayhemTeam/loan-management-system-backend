@@ -25,19 +25,22 @@ public class LoanServiceImpl implements LoanService{
     }
 
     @Override
-    public GetLoanDto getLoanById(Long id){
+    public GetLoanDto getLoanById(Long id, GetUserDto userLogged){
         Loan foundedLoan = loanRepository.findById(id).orElse(null);
-
         Long userIDByLoan = foundedLoan.getUsers().getId();
         User usersLoan = userRepository.findById(userIDByLoan).orElse(null);
 
         String userRole = usersLoan.getAccount().getRole().getRoleName();
         String usersName = usersLoan.getFirstName() + " " + usersLoan.getLastName();
 
-        return new GetLoanDto(foundedLoan.getId(),
-                foundedLoan.getAmount(),
-                foundedLoan.getTerm(),
-                foundedLoan.getLoanTypes().getType(),
-                usersName);
+        //Checks if the user logged is the same user stored in the loan or if it is a Manager
+        if((userLogged.getId().equals(userIDByLoan)) || (userLogged.getRole().equals("Manager"))){
+            return new GetLoanDto(foundedLoan.getId(),
+                    foundedLoan.getAmount(),
+                    foundedLoan.getTerm(),
+                    foundedLoan.getLoanTypes().getType(),
+                    usersName);
+        }
+        else return null;
     }
 }

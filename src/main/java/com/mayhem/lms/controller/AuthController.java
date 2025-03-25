@@ -30,15 +30,14 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
+    @PostMapping("/login")public ResponseEntity<?> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
         if (accountService.verifyCredentials(userCredentials)) {
             Account account = accountService.getAccountByEmail(userCredentials.getEmail());
             GetUserDto loggedUser = userService.getUserById(account.getUser().getId());
             session.setAttribute("user", loggedUser);
-            return ResponseEntity.ok("Login Successful");
+            return ResponseEntity.ok(loggedUser);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }
 
