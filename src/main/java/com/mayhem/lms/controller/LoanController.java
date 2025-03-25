@@ -24,8 +24,8 @@ public class LoanController {
             value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UpdateLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
-        UpdateLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
+    public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
+        GetLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
         if(updatedLoan == null){
             return ResponseEntity.notFound().build();
         }

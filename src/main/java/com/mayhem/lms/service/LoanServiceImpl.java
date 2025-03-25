@@ -1,6 +1,7 @@
 package com.mayhem.lms.service;
 
 import com.mayhem.lms.dto.CreateLoanDto;
+import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.LoanStatus;
@@ -28,25 +29,25 @@ public class LoanServiceImpl implements LoanService{
     }
 
     @Override
-    public UpdateLoanDto updateLoan(Long id, Loan loanDetails) {
+    public GetLoanDto updateLoan(Long id, Loan loanDetails) {
         Loan existingLoan = loanRepository.findById(id).orElse(null);
         if (existingLoan != null) {
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
             existingLoan.setLoanStatus(loanDetails.getLoanStatus());
-            loanRepository.save(existingLoan);
-
-            Loan updatedLoan = loanRepository.findById(id).orElse(null);
-            if (updatedLoan != null) {
-                return new UpdateLoanDto(
-                        updatedLoan.getAmount(),
-                        updatedLoan.getTerm(),
-                        updatedLoan.getLoanTypes(),
-                        updatedLoan.getLoanStatus()
-                );
-            } return null;
-        } return null;
+            Loan updatedLoan = loanRepository.save(existingLoan);
+            
+            return new GetLoanDto(
+                updatedLoan.getId(),
+                updatedLoan.getAmount(),
+                updatedLoan.getTerm(),
+                updatedLoan.getLoanTypes().getType(),
+                updatedLoan.getLoanStatus().getStatus(),
+                updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
+            );
+        }
+        return null;
     }
 
     @Override
