@@ -34,11 +34,13 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        /*Ask team if we should let user update their email, if so then create a Dto for that*/
+        if (userDetails.getFirstName() == null || userDetails.getFirstName().trim().isEmpty())
+            return ResponseEntity.badRequest().build();
+        if (userDetails.getLastName() == null || userDetails.getLastName().trim().isEmpty())
+            return ResponseEntity.badRequest().build();
         GetUserDto updatedUser = userService.updateUser(id, userDetails);
-        if(updatedUser == null){
+        if(updatedUser == null)
             return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(updatedUser);
     }
 
