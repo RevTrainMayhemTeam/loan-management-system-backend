@@ -1,6 +1,7 @@
 package com.mayhem.lms.dto;
 
 public class GetUserDto {
+    private Long id;
     private String email;
     private String firstName;
     private String lastName;
@@ -10,13 +11,18 @@ public class GetUserDto {
     public GetUserDto() {
     }
 
-    public GetUserDto(String email, String firstName, String lastName, String phoneNumber, String role) {
+    public GetUserDto(Long id, String email, String firstName, String lastName, String phoneNumber, String role) {
+        this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
+
+    public Long getId(){ return id;}
+
+    public void setId(){ this.id = id;}
 
     public String getEmail() {
         return email;

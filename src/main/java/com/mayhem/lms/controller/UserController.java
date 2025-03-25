@@ -5,6 +5,8 @@ import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -24,12 +26,23 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetUserDto> getUserByID(@PathVariable Long id){
-        GetUserDto foundUser = userService.getUserById(id);
-        if(foundUser == null){
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getUserByID(@PathVariable Long id, HttpSession session){
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        //Checks if the user is not logged in
+        if(userLogged == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
         }
-        return ResponseEntity.ok(foundUser);
+
+        //Checks if the user logged in is the same from the request or if it's a Manager
+        if((id.equals(userLogged.getId())) || (userLogged.getRole().equals("Manager"))){
+            GetUserDto foundUser = userService.getUserById(id);
+            if(foundUser == null){
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(foundUser);
+        }
+        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
     }
 
     @PutMapping("/{id}")
