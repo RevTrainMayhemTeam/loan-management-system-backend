@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long>{
-    User getByUserId(Long id);
+    User findByUsersId(Long id);
 
-    LoanType getByLoanTypeId(Long id);
+    LoanType findByLoanTypesId(Long id);
 
-    LoanStatus getByLoanStatusId(Long id);
+    LoanStatus findByLoanStatusId(Long id);
 }
