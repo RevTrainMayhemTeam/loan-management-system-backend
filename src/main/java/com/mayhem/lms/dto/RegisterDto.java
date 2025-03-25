@@ -6,12 +6,12 @@ public class RegisterDto {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private Integer roleId;
+    private Long roleId;
 
     public RegisterDto() {
     }
 
-    public RegisterDto(String email, String password, String firstName, String lastName, String phoneNumber, Integer roleId) {
+    public RegisterDto(String email, String password, String firstName, String lastName, String phoneNumber, Long roleId) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -60,11 +60,11 @@ public class RegisterDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 }

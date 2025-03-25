@@ -23,9 +23,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account createAccount(RegisterDto newAccount) {
         AccountRole role = roleRepository.getByRoleName("Customer");
+//        AccountRole role = new AccountRole();
         Account account = new Account();
-        if (!validateEmail(newAccount.getEmail()))
-            System.out.println("Email not valid");
         account.setEmail(newAccount.getEmail());
         account.setPassword(newAccount.getPassword());
         account.setRole(role);
@@ -33,7 +32,11 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(account);
     }
 
-    //Validate email
+    /**
+     *
+     * @param email user email
+     * @return true if email matches regex, false otherwise
+     */
     public boolean validateEmail(String email) {
         String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         return Pattern.compile(regexPattern)

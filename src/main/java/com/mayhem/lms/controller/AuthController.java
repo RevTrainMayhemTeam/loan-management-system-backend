@@ -24,6 +24,8 @@ public class AuthController {
     @PostMapping(path = "/register")
     public @ResponseBody ResponseEntity<GetUserDto> registerUser(@RequestBody RegisterDto newUser){
         Account acc = accountService.createAccount(newUser);
+        if (!accountService.validateEmail(newUser.getEmail()))
+            return ResponseEntity.badRequest().build();
         GetUserDto createdUser = userService.createUser(newUser, acc);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
