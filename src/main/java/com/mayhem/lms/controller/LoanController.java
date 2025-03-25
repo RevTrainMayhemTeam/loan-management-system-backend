@@ -20,23 +20,6 @@ public class LoanController {
         this.loanService = loanServiceImpl;
     }
 
-
-    /**
-     * @json
-     * {
-     *     "amount": 33.44,
-     *     "term": 2,
-     *     "loanTypes": {
-     *         "id": 3
-     *     },
-     *     "loanStatus": {
-     *         "id": 3
-     *     }
-     * }
-     * @param id
-     * @param loanDetails
-     * @return
-     */
     @PutMapping(
             value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE
@@ -51,8 +34,6 @@ public class LoanController {
 
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto newLoan) {
-//        Loan loan = loanService.createLoan(newLoan);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(loan);
         try {
             Loan loan = loanService.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(

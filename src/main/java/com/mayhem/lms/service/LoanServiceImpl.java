@@ -27,10 +27,6 @@ public class LoanServiceImpl implements LoanService{
         this.userRepository = userRepository;
     }
 
-//    public LoanServiceImpl(LoanRepository loanRepository) {
-//        this.loanRepository = loanRepository;
-//    }
-
     @Override
     public UpdateLoanDto updateLoan(Long id, Loan loanDetails) {
         Loan existingLoan = loanRepository.findById(id).orElse(null);

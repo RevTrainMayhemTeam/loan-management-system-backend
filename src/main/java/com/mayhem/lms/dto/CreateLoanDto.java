@@ -1,9 +1,5 @@
 package com.mayhem.lms.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 public class CreateLoanDto {
     private Long loanId;
     private Double amount;
