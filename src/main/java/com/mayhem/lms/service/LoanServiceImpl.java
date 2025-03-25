@@ -1,6 +1,5 @@
 package com.mayhem.lms.service;
 
-import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.repository.LoanRepository;
@@ -35,5 +34,10 @@ public class LoanServiceImpl implements LoanService{
                 );
             } return null;
         } return null;
+    }
+
+    @Override
+    public Loan createLoan(Loan loan) {
+        return loanRepository.save(loan);
     }
 }

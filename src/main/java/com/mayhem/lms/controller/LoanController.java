@@ -4,6 +4,7 @@ import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +45,11 @@ public class LoanController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedLoan);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createLoan(@RequestBody Loan newLoan) {
+        Loan loan = loanService.createLoan(newLoan);
+        return ResponseEntity.status(HttpStatus.CREATED).body(loan);
     }
 }

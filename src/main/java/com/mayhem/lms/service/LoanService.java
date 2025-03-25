@@ -3,8 +3,7 @@ package com.mayhem.lms.service;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 
-import java.util.Optional;
-
 public interface LoanService {
     UpdateLoanDto updateLoan(Long id, Loan loan);
+    Loan createLoan(Loan loan);
 }
