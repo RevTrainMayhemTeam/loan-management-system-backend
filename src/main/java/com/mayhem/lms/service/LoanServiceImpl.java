@@ -58,11 +58,11 @@ public class LoanServiceImpl implements LoanService{
         Loan loan = new Loan();
         loan.setAmount(newLoan.getAmount());
         loan.setTerm(newLoan.getTerm());
-        User user = userRepository.findById(newLoan.getUserId()).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(newLoan.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         loan.setUsers(user);
-        LoanType type = typeRepository.findById(newLoan.getType()).orElseThrow(RuntimeException::new);
+        LoanType type = typeRepository.findById(newLoan.getType()).orElseThrow(() -> new RuntimeException("Loan type not found"));
         loan.setLoanTypes(type);
-        LoanStatus status = statusRepository.findById(newLoan.getStatus()).orElseThrow(RuntimeException::new);
+        LoanStatus status = statusRepository.findById(newLoan.getStatus()).orElseThrow(() -> new RuntimeException("Loan status not found"));
         loan.setLoanStatus(status);
         return loanRepository.save(loan);
     }

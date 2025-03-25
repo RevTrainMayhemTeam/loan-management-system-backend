@@ -1,6 +1,7 @@
 package com.mayhem.lms.controller;
 
 import com.mayhem.lms.dto.CreateLoanDto;
+import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
@@ -50,7 +51,21 @@ public class LoanController {
 
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto newLoan) {
-        Loan loan = loanService.createLoan(newLoan);
-        return ResponseEntity.status(HttpStatus.CREATED).body(loan);
+//        Loan loan = loanService.createLoan(newLoan);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(loan);
+        try {
+            Loan loan = loanService.createLoan(newLoan);
+            GetLoanDto response = new GetLoanDto(
+                    loan.getId(),
+                    loan.getAmount(),
+                    loan.getTerm(),
+                    loan.getLoanTypes().getType(),
+                    loan.getLoanStatus().getStatus(),
+                    loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
