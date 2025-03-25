@@ -6,6 +6,6 @@ import com.mayhem.lms.model.Account;
 
 public interface AccountService {
     public Account createAccount(RegisterDto newAccount);
-    public Account getAccountByEmail(String email);
-    public Boolean verifyCredentials(AuthDto userCredentials);
+    Account getAccountByEmail(String email);
+    Boolean verifyCredentials(AuthDto userCredentials);
 }

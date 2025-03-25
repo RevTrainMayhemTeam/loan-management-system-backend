@@ -9,6 +9,7 @@ import com.mayhem.lms.service.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,20 +26,35 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@RequestBody RegisterDto newUser){
+        if (newUser.getEmail().trim().isEmpty() || newUser.getEmail() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if (newUser.getPassword().trim().isEmpty() || newUser.getPassword() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getFirstName().trim().isEmpty() || newUser.getFirstName() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getLastName().trim().isEmpty() || newUser.getLastName() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getPhoneNumber().trim().isEmpty() || newUser.getPhoneNumber() == null){
+            return ResponseEntity.badRequest().build();
+        }
         Account acc = accountService.createAccount(newUser);
         UserDto createdUser = userService.createUser(newUser, acc);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
+    public ResponseEntity<?> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
         if (accountService.verifyCredentials(userCredentials)) {
             Account account = accountService.getAccountByEmail(userCredentials.getEmail());
             UserDto loggedUser = userService.getUserById(account.getUser().getId());
             session.setAttribute("user", loggedUser);
-            return ResponseEntity.ok("Login Successful");
+            return ResponseEntity.ok(loggedUser);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }
 
