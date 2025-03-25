@@ -28,6 +28,7 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(RegisterDto newAccount) {
         //encrypt password with Bcrypt
         String hashPassword = BCrypt.hashpw(newAccount.getPassword(), BCrypt.gensalt());
+        System.out.println(hashPassword);
         AccountRole role = roleRepository.getByRoleName("Customer");
         Account account = new Account();
         account.setEmail(newAccount.getEmail());
