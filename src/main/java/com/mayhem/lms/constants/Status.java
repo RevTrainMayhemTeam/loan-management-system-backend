@@ -1,7 +1,8 @@
 package com.mayhem.lms.constants;
 
 public enum Status {
-    ACCEPTED,
-    REJECTED,
-    PENDING
+    PENDING,
+    APPROVED,
+    REJECTED
+
 }
