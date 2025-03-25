@@ -39,6 +39,7 @@ public class LoanServiceImpl implements LoanService{
                     foundedLoan.getAmount(),
                     foundedLoan.getTerm(),
                     foundedLoan.getLoanTypes().getType(),
+                    foundedLoan.getLoanStatus().getStatus(),
                     usersName);
         }
         else return null;

@@ -25,12 +25,28 @@ public class AuthController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<GetUserDto> registerUser(@RequestBody RegisterDto newUser){
+        if (newUser.getEmail().trim().isEmpty() || newUser.getEmail() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if (newUser.getPassword().trim().isEmpty() || newUser.getPassword() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getFirstName().trim().isEmpty() || newUser.getFirstName() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getLastName().trim().isEmpty() || newUser.getLastName() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(newUser.getPhoneNumber().trim().isEmpty() || newUser.getPhoneNumber() == null){
+            return ResponseEntity.badRequest().build();
+        }
         Account acc = accountService.createAccount(newUser);
         GetUserDto createdUser = userService.createUser(newUser, acc);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PostMapping("/login")public ResponseEntity<?> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
         if (accountService.verifyCredentials(userCredentials)) {
             Account account = accountService.getAccountByEmail(userCredentials.getEmail());
             GetUserDto loggedUser = userService.getUserById(account.getUser().getId());

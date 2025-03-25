@@ -5,16 +5,18 @@ public class GetLoanDto {
     private Double amount;
     private Integer term;
     private String type;
+    private String status;
     private String clientName;
 
     public GetLoanDto() {
     }
 
-    public GetLoanDto(Long id, Double amount, Integer term, String type, String clientName) {
+    public GetLoanDto(Long id, Double amount, Integer term, String type, String status, String clientName) {
         this.id = id;
         this.amount = amount;
         this.term = term;
         this.type = type;
+        this.status = status;
         this.clientName = clientName;
     }
 
@@ -44,6 +46,14 @@ public class GetLoanDto {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStatus(){
+        return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 
     public String getClientName() {
