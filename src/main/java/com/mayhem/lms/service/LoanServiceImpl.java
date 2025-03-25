@@ -23,10 +23,6 @@ public class LoanServiceImpl implements LoanService{
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
             existingLoan.setLoanStatus(loanDetails.getLoanStatus());
-//            existingLoan.setId(loanDetails.getId());
-//            existingLoan.setLoanStatus(loanDetails.getLoanStatus());
-//            existingLoan.setLoanTypes(loanDetails.getLoanTypes());
-//            existingLoan.setLoanStatus(loanDetails.getLoanStatus());
             loanRepository.save(existingLoan);
 
             Loan updatedLoan = loanRepository.findById(id).orElse(null);

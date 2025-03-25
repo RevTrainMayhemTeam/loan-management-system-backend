@@ -1,7 +1,5 @@
 package com.mayhem.lms.controller;
 
-import com.mayhem.lms.dto.GetLoanDto;
-import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
