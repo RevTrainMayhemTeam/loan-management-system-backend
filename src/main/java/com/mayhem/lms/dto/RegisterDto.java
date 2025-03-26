@@ -1,6 +1,14 @@
 package com.mayhem.lms.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class RegisterDto {
+    @NotEmpty(message = "Email address cannot be empty")
+    @Email(message = "Invalid email address")
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email address")
     private String email;
     private String password;
     private String firstName;

@@ -22,13 +22,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createAccount(RegisterDto newAccount) {
-        AccountRole role = roleRepository.getByRoleName("Customer");
-//        AccountRole role = new AccountRole();
+        if (!validateEmail(newAccount.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        AccountRole role = roleRepository.findById(newAccount.getRoleId())
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
         Account account = new Account();
         account.setEmail(newAccount.getEmail());
         account.setPassword(newAccount.getPassword());
         account.setRole(role);
-
         return accountRepository.save(account);
     }
 
