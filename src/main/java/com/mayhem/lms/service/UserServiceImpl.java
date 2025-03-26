@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
         user.setAccount(account);
         User createdUser = userRepository.save(user);
         return new GetUserDto(
+                createdUser.getId(),
                 account.getEmail(),
                 createdUser.getFirstName(),
                 createdUser.getLastName(),
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
         List<GetUserDto> usersDto = new ArrayList<>();
         for (User user : users) {
             usersDto.add(new GetUserDto(
+                    user.getId(),
                     user.getAccount().getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService {
         User foundUser = userRepository.findById(id).orElse(null);
         if (foundUser!=null){
             return new GetUserDto(
+                    foundUser.getId(),
                     foundUser.getAccount().getEmail(),
                     foundUser.getFirstName(),
                     foundUser.getLastName(),
@@ -77,6 +81,7 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
                 return new GetUserDto(
+                        updatedUser.getId(),
                         updatedUser.getAccount().getEmail(),
                         updatedUser.getFirstName(),
                         updatedUser.getLastName(),

@@ -1,11 +1,17 @@
 package com.mayhem.lms.service;
 
+import com.mayhem.lms.dto.AuthDto;
 import com.mayhem.lms.dto.RegisterDto;
+import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.AccountRole;
+import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.AccountRepository;
 import com.mayhem.lms.repository.RoleRepository;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -20,12 +26,27 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account createAccount(RegisterDto newAccount) {
+        //encrypt password with Bcrypt
+        String hashPassword = BCrypt.hashpw(newAccount.getPassword(), BCrypt.gensalt());
+        System.out.println(hashPassword);
         AccountRole role = roleRepository.getByRoleName("Customer");
         Account account = new Account();
         account.setEmail(newAccount.getEmail());
-        account.setPassword(newAccount.getPassword());
+        account.setPassword(hashPassword);
         account.setRole(role);
 
         return accountRepository.save(account);
+    }
+
+    @Override
+    public Account getAccountByEmail(String email) {
+        Optional<Account> foundAccount = accountRepository.findByEmail(email);
+        return foundAccount.orElse(null);
+    }
+
+    @Override
+    public Boolean verifyCredentials(AuthDto userCredentials) {
+        Optional<Account> account = accountRepository.findByEmail(userCredentials.getEmail());
+        return account.isPresent() && BCrypt.checkpw(userCredentials.getPassword(), account.get().getPassword());
     }
 }
