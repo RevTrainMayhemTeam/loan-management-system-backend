@@ -25,7 +25,7 @@ public class UserController {
         GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
-        } else if (!"Customer".equals(sessionUser.getRole())) {
+        } else if (!"Manager".equals(sessionUser.getRole())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
         }else {
             return ResponseEntity.ok(userService.findAllUsers());
