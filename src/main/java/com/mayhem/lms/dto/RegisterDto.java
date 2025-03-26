@@ -1,17 +1,25 @@
 package com.mayhem.lms.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class RegisterDto {
+    @NotEmpty(message = "Email address cannot be empty")
+    @Email(message = "Invalid email address")
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email address")
     private String email;
     private String password;
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private Integer roleId;
+    private Long roleId;
 
     public RegisterDto() {
     }
 
-    public RegisterDto(String email, String password, String firstName, String lastName, String phoneNumber, Integer roleId) {
+    public RegisterDto(String email, String password, String firstName, String lastName, String phoneNumber, Long roleId) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -60,11 +68,11 @@ public class RegisterDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 }

@@ -52,6 +52,10 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public GetLoanDto getLoanById(Long id, GetUserDto userLogged){
         Loan foundedLoan = loanRepository.findById(id).orElse(null);
+
+        if(foundedLoan == null)
+            return null;
+
         Long userIDByLoan = foundedLoan.getUsers().getId();
         User usersLoan = userRepository.findById(userIDByLoan).orElse(null);
 

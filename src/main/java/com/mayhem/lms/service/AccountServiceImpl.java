@@ -10,7 +10,7 @@ import com.mayhem.lms.repository.AccountRepository;
 import com.mayhem.lms.repository.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-
+import java.util.regex.Pattern;
 import java.util.Optional;
 
 @Service
@@ -28,14 +28,29 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(RegisterDto newAccount) {
         //encrypt password with Bcrypt
         String hashPassword = BCrypt.hashpw(newAccount.getPassword(), BCrypt.gensalt());
-        System.out.println(hashPassword);
-        AccountRole role = roleRepository.getByRoleName("Customer");
+        if (!validateEmail(newAccount.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+        AccountRole role = roleRepository.findById(newAccount.getRoleId())
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
         Account account = new Account();
         account.setEmail(newAccount.getEmail());
         account.setPassword(hashPassword);
         account.setRole(role);
 
         return accountRepository.save(account);
+    }
+
+    /**
+     *
+     * @param email user email
+     * @return true if email matches regex, false otherwise
+     */
+    public boolean validateEmail(String email) {
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        return Pattern.compile(regexPattern)
+                .matcher(email)
+                .matches();
     }
 
     @Override
