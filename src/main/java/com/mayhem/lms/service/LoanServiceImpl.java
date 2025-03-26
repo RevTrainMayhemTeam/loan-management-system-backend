@@ -1,6 +1,7 @@
 package com.mayhem.lms.service;
 
 import com.mayhem.lms.dto.CreateLoanDto;
+import com.mayhem.lms.dto.GetLoanByUserIdDto;
 import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
@@ -12,6 +13,8 @@ import com.mayhem.lms.repository.LoanStatusRepository;
 import com.mayhem.lms.repository.LoanTypeRepository;
 import com.mayhem.lms.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class LoanServiceImpl implements LoanService{
@@ -62,5 +65,21 @@ public class LoanServiceImpl implements LoanService{
         LoanStatus status = statusRepository.findById(newLoan.getStatus()).orElseThrow(() -> new RuntimeException("Loan status not found"));
         loan.setLoanStatus(status);
         return loanRepository.save(loan);
+    }
+
+    @Override
+    public GetLoanByUserIdDto getLoanByUserId(Long userId) {
+        Optional<Loan> loan = loanRepository.findByUsersId(userId);
+        if (loan.isPresent()) {
+            return new GetLoanByUserIdDto(
+                loan.get().getId(),
+                loan.get().getAmount(),
+                loan.get().getTerm(),
+                loan.get().getLoanTypes().getType(),
+                loan.get().getLoanStatus().getStatus(),
+                loan.get().getUsers().getId()
+            );
+        }
+        return null;
     }
 }
