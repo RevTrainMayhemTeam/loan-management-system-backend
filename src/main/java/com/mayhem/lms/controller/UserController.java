@@ -63,8 +63,16 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserProfile(@PathVariable Long id) {
-        boolean deleted = userService.deleteUser(id);
-        return deleted ? ResponseEntity.ok("User successfully deleted") : ResponseEntity.notFound().build();
+    public ResponseEntity<String> deleteUserProfile(@PathVariable Long id, HttpSession session) {
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        boolean deleted = userService.deleteUser(id, userLogged);
+
+        if (deleted){
+            session.invalidate();
+            return ResponseEntity.ok("User successfully deleted");
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+        }
     }
 }

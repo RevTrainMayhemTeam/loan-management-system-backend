@@ -10,4 +10,5 @@ public interface LoanService {
     List<GetLoanDto> getAllLoans();
     public GetLoanDto getLoanById(Long id, GetUserDto userLogged);
     public GetUserDto createLoan(Loan newLoan);
+    public boolean deleteLoan(Long loanId, GetUserDto userLogged);
 }

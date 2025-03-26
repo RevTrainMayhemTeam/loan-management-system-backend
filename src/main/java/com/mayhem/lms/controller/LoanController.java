@@ -5,10 +5,7 @@ import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.LoanServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.mayhem.lms.dto.GetLoanDto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
@@ -52,6 +49,17 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
         }
         return ResponseEntity.ok(foundLoan);
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteLoan(@PathVariable Long id, HttpSession session) {
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        if(userLogged == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
+        }
+
+        boolean deleted = loanServiceImpl.deleteLoan(id, userLogged);
+        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
     }
 }

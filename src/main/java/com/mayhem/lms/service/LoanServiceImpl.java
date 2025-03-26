@@ -69,4 +69,17 @@ public class LoanServiceImpl implements LoanService{
         }
         else return null;
     }
+
+    @Override
+    public boolean deleteLoan(Long loanId, GetUserDto userLogged){
+        Loan loanToDelete = loanRepository.findById(loanId).orElse(null);
+        Long ownerId = loanToDelete.getUsers().getId();
+
+        if(userLogged.getId().equals(ownerId)){
+            loanRepository.delete(loanToDelete);
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
