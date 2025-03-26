@@ -57,7 +57,8 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/session-check")public ResponseEntity<?> checkSession(HttpSession session) {
+    @GetMapping("/session-check")
+    public ResponseEntity<?> checkSession(HttpSession session) {
         GetUserDto loggedUser = (GetUserDto) session.getAttribute("user");
         if (loggedUser != null) {
             return ResponseEntity.ok(loggedUser);// Return user details if logged in

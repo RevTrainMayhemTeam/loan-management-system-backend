@@ -8,6 +8,10 @@ import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class LoanServiceImpl implements LoanService{
 
@@ -22,6 +26,27 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public GetUserDto createLoan(Loan newLoan) {
         return null;
+    }
+
+    @Override
+    public List<GetLoanDto> getAllLoans() {
+        List<Loan> loans = loanRepository.findAll();
+        List<GetLoanDto> loanDto = new ArrayList<>();
+        for (Loan loan : loans) {
+            Optional<User> optionalUser = userRepository.findById(loan.getUsers().getId());
+
+            User user = optionalUser.get();
+            String userName = user.getFirstName() + " " + user.getLastName();
+            loanDto.add(new GetLoanDto(
+                    loan.getId(),
+                    loan.getAmount(),
+                    loan.getTerm(),
+                    loan.getLoanTypes().getType(),
+                    loan.getLoanStatus().getStatus(),
+                    userName
+            ));
+        }
+        return loanDto;
     }
 
     @Override

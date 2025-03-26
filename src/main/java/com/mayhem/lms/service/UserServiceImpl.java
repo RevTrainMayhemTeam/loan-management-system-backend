@@ -28,7 +28,8 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(newUser.getPhoneNumber());
         user.setAccount(account);
         User createdUser = userRepository.save(user);
-        return new GetUserDto(createdUser.getId(),
+        return new GetUserDto(
+                createdUser.getId(),
                 account.getEmail(),
                 createdUser.getFirstName(),
                 createdUser.getLastName(),
@@ -42,7 +43,8 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         List<GetUserDto> usersDto = new ArrayList<>();
         for (User user : users) {
-            usersDto.add(new GetUserDto(user.getId(),
+            usersDto.add(new GetUserDto(
+                    user.getId(),
                     user.getAccount().getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
@@ -57,7 +59,8 @@ public class UserServiceImpl implements UserService {
     public GetUserDto getUserById(Long id){
         User foundUser = userRepository.findById(id).orElse(null);
         if (foundUser!=null){
-            return new GetUserDto(foundUser.getId(),
+            return new GetUserDto(
+                    foundUser.getId(),
                     foundUser.getAccount().getEmail(),
                     foundUser.getFirstName(),
                     foundUser.getLastName(),
@@ -77,7 +80,8 @@ public class UserServiceImpl implements UserService {
             userRepository.save(existingUser);
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
-                return new GetUserDto(updatedUser.getId(),
+                return new GetUserDto(
+                        updatedUser.getId(),
                         updatedUser.getAccount().getEmail(),
                         updatedUser.getFirstName(),
                         updatedUser.getLastName(),

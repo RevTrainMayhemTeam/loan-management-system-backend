@@ -2,6 +2,7 @@ package com.mayhem.lms.controller;
 
 import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.Loan;
+import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.LoanServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,19 @@ public class LoanController {
     public LoanController(LoanServiceImpl loanServiceImpl) {
         this.loanServiceImpl = loanServiceImpl;
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllLoans(HttpSession session){
+        GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
+        if (sessionUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        } else if (!"Customer".equals(sessionUser.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+        }else {
+            return ResponseEntity.ok(loanServiceImpl.getAllLoans());
+        }
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanByID(@PathVariable Long id, HttpSession session){
