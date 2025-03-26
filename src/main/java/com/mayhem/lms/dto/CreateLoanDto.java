@@ -6,18 +6,27 @@ public class CreateLoanDto {
     private Integer term;
     private Long userId;
     private Long type;
-    private Long status;
+    private Long statusId;
 
     public CreateLoanDto() {
     }
 
-    public CreateLoanDto(Long loanId, Double amount, Integer term, Long userId, Long type, Long status) {
+    public CreateLoanDto(Long loanId, Double amount, Integer term, Long userId, Long type, Long statusId) {
         this.loanId = loanId;
         this.amount = amount;
         this.term = term;
         this.userId = userId;
         this.type = type;
-        this.status = status;
+        this.statusId = 1L;
+    }
+
+    public CreateLoanDto(Long loanId, Double amount, Integer term, Long userId, Long type) {
+        this.loanId = loanId;
+        this.amount = amount;
+        this.term = term;
+        this.userId = userId;
+        this.type = type;
+        this.statusId = 1L;
     }
 
     public Long getLoanId() {
@@ -60,11 +69,11 @@ public class CreateLoanDto {
         this.type = type;
     }
 
-    public Long getStatus() {
-        return status;
+    public Long getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(Long status) {
-        this.status = status;
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 }

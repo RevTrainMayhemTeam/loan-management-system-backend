@@ -3,7 +3,6 @@ package com.mayhem.lms.controller;
 import com.mayhem.lms.dto.CreateLoanDto;
 import com.mayhem.lms.dto.GetLoanByUserIdDto;
 import com.mayhem.lms.dto.GetLoanDto;
-import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
@@ -32,8 +31,8 @@ public class LoanController {
             return ResponseEntity.badRequest().build();
         if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty())
             return ResponseEntity.badRequest().build();
-        if (loanDetails.getLoanStatus() == null || loanDetails.getLoanStatus().getId() == null || loanDetails.getLoanStatus().getStatus() == null || loanDetails.getLoanStatus().getStatus().trim().isEmpty())
-            return ResponseEntity.badRequest().build();
+//        if (loanDetails.getLoanStatus() == null || loanDetails.getLoanStatus().getId() == null || loanDetails.getLoanStatus().getStatus() == null || loanDetails.getLoanStatus().getStatus().trim().isEmpty())
+//            return ResponseEntity.badRequest().build();
         GetLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
         if (updatedLoan == null)
             return ResponseEntity.notFound().build();
@@ -48,8 +47,8 @@ public class LoanController {
             return ResponseEntity.badRequest().build();
         if (newLoan.getType() == null)
             return ResponseEntity.badRequest().build();
-        if (newLoan.getStatus() == null)
-            return ResponseEntity.badRequest().build();
+//        if (newLoan.getStatus() == null)
+//            return ResponseEntity.badRequest().build();
         try {
             Loan loan = loanService.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(
@@ -74,4 +73,7 @@ public class LoanController {
         }
         return ResponseEntity.ok(foundLoan);
     }
+
+//    @PutMapping(value = "/{id}")
+//    public ResponseEntity
 }

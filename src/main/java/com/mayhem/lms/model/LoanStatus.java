@@ -30,6 +30,11 @@ public class LoanStatus {
         this.loans = loans;
     }
 
+    public LoanStatus(Long id, String status) {
+        this.status = status;
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

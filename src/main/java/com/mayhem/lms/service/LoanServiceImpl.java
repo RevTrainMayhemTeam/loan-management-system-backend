@@ -1,9 +1,9 @@
 package com.mayhem.lms.service;
 
+import com.mayhem.lms.constants.Status;
 import com.mayhem.lms.dto.CreateLoanDto;
 import com.mayhem.lms.dto.GetLoanByUserIdDto;
 import com.mayhem.lms.dto.GetLoanDto;
-import com.mayhem.lms.dto.UpdateLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.LoanStatus;
 import com.mayhem.lms.model.LoanType;
@@ -38,7 +38,7 @@ public class LoanServiceImpl implements LoanService{
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
-            existingLoan.setLoanStatus(loanDetails.getLoanStatus());
+//            existingLoan.setLoanStatus(loanDetails.getLoanStatus());
             Loan updatedLoan = loanRepository.save(existingLoan);
             
             return new GetLoanDto(
@@ -62,7 +62,9 @@ public class LoanServiceImpl implements LoanService{
         loan.setUsers(user);
         LoanType type = typeRepository.findById(newLoan.getType()).orElseThrow(() -> new RuntimeException("Loan type not found"));
         loan.setLoanTypes(type);
-        LoanStatus status = statusRepository.findById(newLoan.getStatus()).orElseThrow(() -> new RuntimeException("Loan status not found"));
+//        LoanStatus status = statusRepository.findById(newLoan.getStatusId()).orElseThrow(() -> new RuntimeException("Loan status not found"));
+//        Long defaultStatus = 1L;
+        LoanStatus status = new LoanStatus(1L, Status.PENDING.toString());
         loan.setLoanStatus(status);
         return loanRepository.save(loan);
     }
