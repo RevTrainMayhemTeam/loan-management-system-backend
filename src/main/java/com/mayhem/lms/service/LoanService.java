@@ -12,4 +12,7 @@ public interface LoanService {
     Loan createLoan(CreateLoanDto loan);
 //    GetLoanByUserIdDto getLoanByUserId(Long userId);
     List<GetLoanDto> getLoanByUserId(Long userId);
+//    GetLoanDto approveLoan(Long loanId, Loan loan);
+
+    GetLoanDto approveOrRejectLoan(Long loanId, Long statusId);
 }

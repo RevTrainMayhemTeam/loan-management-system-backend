@@ -88,6 +88,56 @@ public class LoanServiceImpl implements LoanService{
         return null;
     }
 
+    @Override
+    public GetLoanDto approveOrRejectLoan(Long loanId, Long statusId) {
+        Optional<Loan> existingLoan = loanRepository.findById(loanId);
+        if (existingLoan.isPresent()) {
+            LoanStatus status = statusRepository.findById(statusId).orElseThrow(() -> new RuntimeException("Loan status not found"));
+            existingLoan.get().setLoanStatus(status);
+            Loan updatedLoan = loanRepository.save(existingLoan.get());
+            return new GetLoanDto(
+                updatedLoan.getId(),
+                updatedLoan.getAmount(),
+                updatedLoan.getTerm(),
+                updatedLoan.getLoanTypes().getType(),
+                updatedLoan.getLoanStatus().getStatus(),
+                updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
+            );
+        }
+//        if (existingLoan.isPresent() && isApproved) {
+//            LoanStatus status = statusRepository.findById(2L).orElseThrow(() -> new RuntimeException("Loan status not found"));
+//            existingLoan.get().setLoanStatus(status);
+//            Loan updatedLoan = loanRepository.save(existingLoan.get());
+//            return new GetLoanDto(
+//                updatedLoan.getId(),
+//                updatedLoan.getAmount(),
+//                updatedLoan.getTerm(),
+//                updatedLoan.getLoanTypes().getType(),
+//                updatedLoan.getLoanStatus().getStatus(),
+//                updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
+//            );
+//        }
+//        else if (existingLoan.isPresent() && !isApproved) {
+//            LoanStatus status = statusRepository.findById(3L).orElseThrow(() -> new RuntimeException("Loan status not found"));
+//            existingLoan.get().setLoanStatus(status);
+//            Loan updatedLoan = loanRepository.save(existingLoan.get());
+//            return new GetLoanDto(
+//                    updatedLoan.getId(),
+//                    updatedLoan.getAmount(),
+//                    updatedLoan.getTerm(),
+//                    updatedLoan.getLoanTypes().getType(),
+//                    updatedLoan.getLoanStatus().getStatus(),
+//                    updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
+//            );
+//        }
+        return null;
+    }
+
+//    @Override
+//    public GetLoanDto approveLoan(Long loanId, Loan loan) {
+//        return null;
+//    }
+
 //    @Override
 //    public GetLoanByUserIdDto getLoanByUserId(Long userId) {
 //        Optional<Loan> loan = loanRepository.findByUsersId(userId);

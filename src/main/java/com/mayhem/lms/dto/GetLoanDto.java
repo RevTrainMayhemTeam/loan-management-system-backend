@@ -20,18 +20,8 @@ public class GetLoanDto {
         this.clientName = clientName;
     }
 
-    public GetLoanDto(Double amount, Integer term, String type, String status, String clientName) {
-        this.amount = amount;
-        this.term = term;
-        this.type = type;
-        this.status = status;
-        this.clientName = clientName;
-    }
-
-    public GetLoanDto(Double amount, Integer term, String type, String status) {
-        this.amount = amount;
-        this.term = term;
-        this.type = type;
+    public GetLoanDto(Long loanId, String status) {
+        this.loanId = loanId;
         this.status = status;
     }
 
