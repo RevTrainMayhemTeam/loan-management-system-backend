@@ -1,7 +1,6 @@
 package com.mayhem.lms.controller;
 
 import com.mayhem.lms.dto.CreateLoanDto;
-import com.mayhem.lms.dto.GetLoanByUserIdDto;
 import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
@@ -22,6 +21,12 @@ public class LoanController {
         this.loanService = loanServiceImpl;
     }
 
+    /**
+     * Update loan by id, it updates only amount, term and type
+     * @param id
+     * @param loanDetails
+     * @return
+     */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
         if (loanDetails.getAmount() == null)
@@ -30,14 +35,17 @@ public class LoanController {
             return ResponseEntity.badRequest().build();
         if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty())
             return ResponseEntity.badRequest().build();
-//        if (loanDetails.getLoanStatus() == null || loanDetails.getLoanStatus().getId() == null || loanDetails.getLoanStatus().getStatus() == null || loanDetails.getLoanStatus().getStatus().trim().isEmpty())
-//            return ResponseEntity.badRequest().build();
         GetLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
         if (updatedLoan == null)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedLoan);
     }
 
+    /**
+     * Create a new loan
+     * @param newLoan
+     * @return
+     */
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto newLoan) {
         if (newLoan.getAmount() == null)
@@ -46,8 +54,6 @@ public class LoanController {
             return ResponseEntity.badRequest().build();
         if (newLoan.getType() == null)
             return ResponseEntity.badRequest().build();
-//        if (newLoan.getStatus() == null)
-//            return ResponseEntity.badRequest().build();
         try {
             Loan loan = loanService.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(
@@ -64,9 +70,13 @@ public class LoanController {
         }
     }
 
+    /**
+     * Get all loans by User id
+     * @param userId
+     * @return
+     */
     @GetMapping(value = "/user/{userId}")
     public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId) {
-//        GetLoanByUserIdDto foundLoan = loanService.getLoanByUserId(userId);
         List<GetLoanDto> foundLoan = loanService.getLoanByUserId(userId);
         if (foundLoan == null) {
             return ResponseEntity.notFound().build();
@@ -74,27 +84,33 @@ public class LoanController {
         return ResponseEntity.ok(foundLoan);
     }
 
+    /**
+     * Reject loan, call approveOrRejectLoan with statusId 3
+     * @param loanId = 3L
+     * @return approveOrRejectLoan
+     */
     @PutMapping(value = "/{loanId}/reject")
     public ResponseEntity rejectLoan(@PathVariable Long loanId) {
         return approveOrRejectLoan(loanId, 3L);
     }
 
+    /**
+     * Approve loan, call approveOrRejectLoan with statusId 2
+     * @param loanId = 2L
+     * @return approveOrRejectLoan
+     */
     @PutMapping(value = "/{loanId}/approve")
     public ResponseEntity approveLoan(@PathVariable Long loanId) {
         return approveOrRejectLoan(loanId, 2L);
     }
-//    public ResponseEntity<?> approveLoan(@PathVariable Long loanId, @RequestBody Loan loan) {
-//        if (loan.getLoanStatus() == null || loan.getLoanStatus().getId() == null || loan.getLoanStatus().getStatus() == null || loan.getLoanStatus().getStatus().trim().isEmpty())
-//            return ResponseEntity.badRequest().build();
-//        GetLoanDto response = loanService.approveLoan(loanId, loan);
-//        if (response == null)
-//            return ResponseEntity.notFound().build();
-//        return ResponseEntity.ok(response);
-//    }
 
+    /**
+     * Method to approve or reject loan
+     * @param loanId
+     * @param statusId
+     * @return ResponseEntity
+     */
     public ResponseEntity<?> approveOrRejectLoan(Long loanId, Long statusId) {
-//        if (loan.getLoanStatus() == null || loan.getLoanStatus().getId() == null || loan.getLoanStatus().getStatus() == null || loan.getLoanStatus().getStatus().trim().isEmpty())
-//            return ResponseEntity.badRequest().build();
         GetLoanDto response = loanService.approveOrRejectLoan(loanId, statusId);
         if (response == null)
             return ResponseEntity.notFound().build();

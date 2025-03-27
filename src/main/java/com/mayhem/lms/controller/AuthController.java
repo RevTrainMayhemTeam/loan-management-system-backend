@@ -26,6 +26,11 @@ public class AuthController {
         this.accountService = accountService;
     }
 
+    /**
+     * Creates a new user, valid email address must be provided
+     * @param newUser
+     * @return
+     */
     @PostMapping(path = "/register")
     public @ResponseBody ResponseEntity<GetUserDto> registerUser(@Valid @RequestBody RegisterDto newUser){
         if (newUser.getEmail().trim().isEmpty() || newUser.getEmail() == null)

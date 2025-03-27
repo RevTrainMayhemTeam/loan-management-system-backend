@@ -19,6 +19,12 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Create a new user
+     * @param newUser
+     * @param account
+     * @return
+     */
     @Override
     public GetUserDto createUser(RegisterDto newUser, Account account) {
         User user = new User();
@@ -66,6 +72,12 @@ public class UserServiceImpl implements UserService {
         } else return null;
     }
 
+    /**
+     * Update a user, only first name, last name and phone number can be updated
+     * @param id
+     * @param userDetails
+     * @return
+     */
     @Override
     public GetUserDto updateUser(Long id, User userDetails) {
         User existingUser = userRepository.findById(id).orElse(null);

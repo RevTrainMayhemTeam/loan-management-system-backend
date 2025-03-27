@@ -32,6 +32,12 @@ public class UserController {
         return ResponseEntity.ok(foundUser);
     }
 
+    /**
+     * Update user details: first name, last name and phone number
+     * @param id
+     * @param userDetails
+     * @return
+     */
     @PutMapping("/{id}")
     public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         if (userDetails.getFirstName() == null || userDetails.getFirstName().trim().isEmpty())

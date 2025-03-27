@@ -35,8 +35,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     *
-     * @param email user email
+     * Validate email format
+     * @param email email to validate
      * @return true if email matches regex, false otherwise
      */
     public boolean validateEmail(String email) {

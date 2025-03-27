@@ -1,8 +1,6 @@
 package com.mayhem.lms.service;
 
-import com.mayhem.lms.constants.Status;
 import com.mayhem.lms.dto.CreateLoanDto;
-import com.mayhem.lms.dto.GetLoanByUserIdDto;
 import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.LoanStatus;
@@ -33,6 +31,12 @@ public class LoanServiceImpl implements LoanService{
         this.userRepository = userRepository;
     }
 
+    /**
+     * Update loan
+     * @param id
+     * @param loanDetails
+     * @return
+     */
     @Override
     public GetLoanDto updateLoan(Long id, Loan loanDetails) {
         Loan existingLoan = loanRepository.findById(id).orElse(null);
@@ -40,7 +44,6 @@ public class LoanServiceImpl implements LoanService{
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
-//            existingLoan.setLoanStatus(loanDetails.getLoanStatus());
             Loan updatedLoan = loanRepository.save(existingLoan);
             
             return new GetLoanDto(
@@ -55,6 +58,11 @@ public class LoanServiceImpl implements LoanService{
         return null;
     }
 
+    /**
+     * Create a new loan
+     * @param newLoan
+     * @return
+     */
     @Override
     public Loan createLoan(CreateLoanDto newLoan) {
         Loan loan = new Loan();
@@ -64,14 +72,16 @@ public class LoanServiceImpl implements LoanService{
         loan.setUsers(user);
         LoanType type = typeRepository.findById(newLoan.getType()).orElseThrow(() -> new RuntimeException("Loan type not found"));
         loan.setLoanTypes(type);
-//        LoanStatus status = statusRepository.findById(newLoan.getStatusId()).orElseThrow(() -> new RuntimeException("Loan status not found"));
-//        Long defaultStatus = 1L;
-//        LoanStatus status = new LoanStatus(1L, Status.PENDING.toString());
         LoanStatus status = statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Loan status not found"));
         loan.setLoanStatus(status);
         return loanRepository.save(loan);
     }
 
+    /**
+     *  Get all loans by user id
+     * @param userId
+     * @return
+     */
     @Override
     public List<GetLoanDto> getLoanByUserId(Long userId) {
         Optional<List<Loan>> loans = loanRepository.findByUsersId(userId);
@@ -88,10 +98,17 @@ public class LoanServiceImpl implements LoanService{
         return null;
     }
 
+    /**
+     * Approve or reject loan
+     * @param loanId
+     * @param statusId
+     * @return
+     */
     @Override
     public GetLoanDto approveOrRejectLoan(Long loanId, Long statusId) {
         Optional<Loan> existingLoan = loanRepository.findById(loanId);
         if (existingLoan.isPresent()) {
+            //Retrieve the loan status using the status id passed in the URL
             LoanStatus status = statusRepository.findById(statusId).orElseThrow(() -> new RuntimeException("Loan status not found"));
             existingLoan.get().setLoanStatus(status);
             Loan updatedLoan = loanRepository.save(existingLoan.get());
@@ -104,54 +121,6 @@ public class LoanServiceImpl implements LoanService{
                 updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
             );
         }
-//        if (existingLoan.isPresent() && isApproved) {
-//            LoanStatus status = statusRepository.findById(2L).orElseThrow(() -> new RuntimeException("Loan status not found"));
-//            existingLoan.get().setLoanStatus(status);
-//            Loan updatedLoan = loanRepository.save(existingLoan.get());
-//            return new GetLoanDto(
-//                updatedLoan.getId(),
-//                updatedLoan.getAmount(),
-//                updatedLoan.getTerm(),
-//                updatedLoan.getLoanTypes().getType(),
-//                updatedLoan.getLoanStatus().getStatus(),
-//                updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
-//            );
-//        }
-//        else if (existingLoan.isPresent() && !isApproved) {
-//            LoanStatus status = statusRepository.findById(3L).orElseThrow(() -> new RuntimeException("Loan status not found"));
-//            existingLoan.get().setLoanStatus(status);
-//            Loan updatedLoan = loanRepository.save(existingLoan.get());
-//            return new GetLoanDto(
-//                    updatedLoan.getId(),
-//                    updatedLoan.getAmount(),
-//                    updatedLoan.getTerm(),
-//                    updatedLoan.getLoanTypes().getType(),
-//                    updatedLoan.getLoanStatus().getStatus(),
-//                    updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
-//            );
-//        }
         return null;
     }
-
-//    @Override
-//    public GetLoanDto approveLoan(Long loanId, Loan loan) {
-//        return null;
-//    }
-
-//    @Override
-//    public GetLoanByUserIdDto getLoanByUserId(Long userId) {
-//        Optional<Loan> loan = loanRepository.findByUsersId(userId);
-//        if (loan.isPresent()) {
-//            return new GetLoanByUserIdDto(
-//                loan.get().getId(),
-//                loan.get().getAmount(),
-//                loan.get().getTerm(),
-//                loan.get().getLoanTypes().getType(),
-//                loan.get().getLoanStatus().getStatus(),
-//                loan.get().getUsers().getId()
-//            );
-//        }
-//        return null;
-//    }
-
 }
