@@ -133,7 +133,7 @@ public class LoanController {
      * @param loanId = 3L
      * @return approveOrRejectLoan
      */
-    @PutMapping(value = "/{loanId}/reject")
+    @PatchMapping(value = "/{loanId}/reject")
     public ResponseEntity rejectLoan(@PathVariable Long loanId) {
         return approveOrRejectLoan(loanId, 3L);
     }
@@ -143,7 +143,7 @@ public class LoanController {
      * @param loanId = 2L
      * @return approveOrRejectLoan
      */
-    @PutMapping(value = "/{loanId}/approve")
+    @PatchMapping(value = "/{loanId}/approve")
     public ResponseEntity approveLoan(@PathVariable Long loanId) {
         return approveOrRejectLoan(loanId, 2L);
     }
