@@ -8,6 +8,8 @@ import com.mayhem.lms.service.AccountServiceImpl;
 import com.mayhem.lms.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,6 +21,8 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserServiceImpl userService;
     private final AccountServiceImpl accountService;
@@ -72,8 +76,10 @@ public class AuthController {
             Account account = accountService.getAccountByEmail(userCredentials.getEmail());
             GetUserDto loggedUser = userService.getUserById(account.getUser().getId());
             session.setAttribute("user", loggedUser);
+            logger.info("Session started for userId: {}", loggedUser.getId());
             return ResponseEntity.ok(loggedUser);
         } else {
+            logger.error("Invalid credentials");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }

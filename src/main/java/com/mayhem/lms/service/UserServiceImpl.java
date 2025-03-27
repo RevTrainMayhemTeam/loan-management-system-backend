@@ -95,7 +95,6 @@ public class UserServiceImpl implements UserService {
             existingUser.setLastName(userDetails.getLastName());
             existingUser.setPhoneNumber(userDetails.getPhoneNumber());
             userRepository.save(existingUser);
-            logger.info("User updated successfully: {}", existingUser);
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
                 return new GetUserDto(

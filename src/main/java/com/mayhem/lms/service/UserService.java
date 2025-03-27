@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserService {
     GetUserDto createUser(RegisterDto newUser, Account account);
     List<GetUserDto> findAllUsers();
-    public boolean deleteUser(Long id, GetUserDto userLogged);
+    boolean deleteUser(Long id, GetUserDto userLogged);
     GetUserDto getUserById(Long id);
     GetUserDto updateUser(Long id, User user);
 }
