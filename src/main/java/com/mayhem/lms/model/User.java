@@ -91,4 +91,15 @@ public class User {
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", account=" + account +
+                '}';
+    }
 }

@@ -58,4 +58,12 @@ public class LoanStatus {
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
     }
+
+    @Override
+    public String toString() {
+        return "LoanStatus{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

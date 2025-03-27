@@ -5,12 +5,16 @@ import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.AccountRole;
 import com.mayhem.lms.repository.AccountRepository;
 import com.mayhem.lms.repository.RoleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
@@ -31,6 +35,7 @@ public class AccountServiceImpl implements AccountService {
         account.setEmail(newAccount.getEmail());
         account.setPassword(newAccount.getPassword());
         account.setRole(role);
+        logger.info("Account created: " + account);
         return accountRepository.save(account);
     }
 

@@ -5,6 +5,8 @@ import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
 
@@ -33,6 +37,7 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(newUser.getPhoneNumber());
         user.setAccount(account);
         User createdUser = userRepository.save(user);
+        logger.info("User created successfully: {}", user);
         return new GetUserDto(
                 account.getEmail(),
                 createdUser.getFirstName(),
@@ -86,6 +91,7 @@ public class UserServiceImpl implements UserService {
             existingUser.setLastName(userDetails.getLastName());
             existingUser.setPhoneNumber(userDetails.getPhoneNumber());
             userRepository.save(existingUser);
+            logger.info("User updated successfully: {}", existingUser);
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
                 return new GetUserDto(
@@ -95,8 +101,12 @@ public class UserServiceImpl implements UserService {
                         updatedUser.getPhoneNumber(),
                         updatedUser.getAccount().getRole().getRoleName()
                 );
-            } else return null;
-        } else return null;
+            } else
+                return null;
+        } else {
+            logger.info("No user found");
+            return null;
+        }
     }
 
     @Override

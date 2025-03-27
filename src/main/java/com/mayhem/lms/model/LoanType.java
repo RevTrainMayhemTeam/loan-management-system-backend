@@ -55,4 +55,12 @@ public class LoanType {
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
     }
+
+    @Override
+    public String toString() {
+        return "LoanType{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

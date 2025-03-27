@@ -10,6 +10,8 @@ import com.mayhem.lms.repository.LoanRepository;
 import com.mayhem.lms.repository.LoanStatusRepository;
 import com.mayhem.lms.repository.LoanTypeRepository;
 import com.mayhem.lms.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LoanServiceImpl implements LoanService{
+
+    private static final Logger logger = LoggerFactory.getLogger(LoanServiceImpl.class);
 
     private final LoanRepository loanRepository;
     private final LoanStatusRepository statusRepository;
@@ -44,6 +48,7 @@ public class LoanServiceImpl implements LoanService{
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
+            logger.info("Loan with loanId: {} updated successfully", id);
             Loan updatedLoan = loanRepository.save(existingLoan);
             
             return new GetLoanDto(
@@ -74,6 +79,7 @@ public class LoanServiceImpl implements LoanService{
         loan.setLoanTypes(type);
         LoanStatus status = statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Loan status not found"));
         loan.setLoanStatus(status);
+        logger.info("Loan created successfully for userId: {}", user.getId());
         return loanRepository.save(loan);
     }
 
@@ -86,6 +92,7 @@ public class LoanServiceImpl implements LoanService{
     public List<GetLoanDto> getLoanByUserId(Long userId) {
         Optional<List<Loan>> loans = loanRepository.findByUsersId(userId);
         if (loans.isPresent()) {
+            logger.info("Loans found for userId {}", userId);
             return loans.get().stream().map(loan -> new GetLoanDto(
                 loan.getId(),
                 loan.getAmount(),
@@ -95,6 +102,7 @@ public class LoanServiceImpl implements LoanService{
                 loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
             )).collect(Collectors.toList());
         }
+        logger.info("No loans found for userId {}", userId);
         return null;
     }
 
@@ -112,6 +120,7 @@ public class LoanServiceImpl implements LoanService{
             LoanStatus status = statusRepository.findById(statusId).orElseThrow(() -> new RuntimeException("Loan status not found"));
             existingLoan.get().setLoanStatus(status);
             Loan updatedLoan = loanRepository.save(existingLoan.get());
+            logger.info("Loan status updated for loanId {} with statusId: {}", loanId, statusId);
             return new GetLoanDto(
                 updatedLoan.getId(),
                 updatedLoan.getAmount(),
@@ -121,6 +130,7 @@ public class LoanServiceImpl implements LoanService{
                 updatedLoan.getUsers().getFirstName() + " " + updatedLoan.getUsers().getLastName()
             );
         }
+        logger.info("No loan found with loanId {}", loanId);
         return null;
     }
 }
