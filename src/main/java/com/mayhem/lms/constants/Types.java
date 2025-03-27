@@ -1,9 +1,9 @@
 package com.mayhem.lms.constants;
 
 public enum Types {
+    PERSONAL,
     MORTGAGE,
     AUTO,
-    PERSONAL,
     STUDENT,
     MEDICAL
 }

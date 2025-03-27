@@ -201,7 +201,7 @@ public class LoanController {
      * @param loanId = 3L
      * @return approveOrRejectLoan
      */
-    @PutMapping(value = "/{loanId}/reject")
+    @PatchMapping(value = "/{loanId}/reject")
     public ResponseEntity rejectLoan(@PathVariable Long loanId, HttpSession session) {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
@@ -215,7 +215,7 @@ public class LoanController {
      * @param loanId = 2L
      * @return approveOrRejectLoan
      */
-    @PutMapping(value = "/{loanId}/approve")
+    @PatchMapping(value = "/{loanId}/approve")
     public ResponseEntity approveLoan(@PathVariable Long loanId, HttpSession session) {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
