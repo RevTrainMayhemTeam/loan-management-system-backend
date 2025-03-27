@@ -44,7 +44,7 @@ public class AuthController {
         if (newUser.getLastName().trim().isEmpty() || newUser.getLastName() == null)
             return ResponseEntity.badRequest().build();
         if (newUser.getRoleId() == null)
-            newUser.setRoleId(2L);
+            return ResponseEntity.badRequest().build();
         Account acc = accountService.createAccount(newUser);
         GetUserDto createdUser = userService.createUser(newUser, acc);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
