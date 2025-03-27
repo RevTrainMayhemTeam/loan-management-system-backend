@@ -4,6 +4,8 @@ import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.service.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserServiceImpl userService;
 
@@ -59,15 +63,25 @@ public class UserController {
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        if (userDetails.getFirstName() == null || userDetails.getFirstName().trim().isEmpty())
-            return ResponseEntity.badRequest().build();
-        if (userDetails.getLastName() == null || userDetails.getLastName().trim().isEmpty())
-            return ResponseEntity.badRequest().build();
-        GetUserDto updatedUser = userService.updateUser(id, userDetails);
-        if(updatedUser == null)
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails, HttpSession session) {
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+        if (userLogged == null) {
+            logger.info("User not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (userLogged.getId() == userDetails.getId()) {
+            logger.info("User logged in: {}, user details: {}", userLogged.getId(), userDetails.getId());
+
+            if (userDetails.getFirstName() == null || userDetails.getFirstName().trim().isEmpty())
+                return ResponseEntity.badRequest().build();
+            if (userDetails.getLastName() == null || userDetails.getLastName().trim().isEmpty())
+                return ResponseEntity.badRequest().build();
+            GetUserDto updatedUser = userService.updateUser(id, userDetails);
+            if (updatedUser == null)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(updatedUser);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @DeleteMapping("/{id}")
