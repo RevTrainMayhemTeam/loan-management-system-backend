@@ -7,6 +7,8 @@ import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/loans", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoanController {
+    private static final Logger logger = LoggerFactory.getLogger(LoanController.class);
+
     private final LoanService loanServiceImpl;
 
     public LoanController(LoanServiceImpl loanServiceImpl) {
@@ -66,13 +70,20 @@ public class LoanController {
     }
 
     /**
-     * Update loan by id, it updates only amount, term and type
+     * Update loan by id, it updates only amount, term and type. Only user can update its own loan
      * @param id
      * @param loanDetails
      * @return
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
+    public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails, HttpSession session) {
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+        if (userLogged == null) {
+            logger.error("Not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+//        if ()
         if (loanDetails.getAmount() == null)
             return ResponseEntity.badRequest().build();
         if (loanDetails.getTerm() == null)
