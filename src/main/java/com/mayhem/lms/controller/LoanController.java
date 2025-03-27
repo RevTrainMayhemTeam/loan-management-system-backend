@@ -176,11 +176,22 @@ public class LoanController {
      */
     @GetMapping(value = "/user/{userId}")
     public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId, HttpSession session) {
+        //Check if user is logged in
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+        if (userLogged == null) {
+            logger.error("Not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
+        //Check if user is either the owner of the loans or a manager
+        if (!userId.equals(userLogged.getId()) && !"Manager".equals(userLogged.getRole())) {
+            logger.error("Unauthorized access to get loans for userId: {}, userSessionId: {}", userId, userLogged.getId());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         List<GetLoanDto> foundLoan = loanServiceImpl.getLoanByUserId(userId);
         if (foundLoan == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(foundLoan);
     }
