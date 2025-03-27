@@ -2,9 +2,11 @@ package com.mayhem.lms.controller;
 
 import com.mayhem.lms.dto.CreateLoanDto;
 import com.mayhem.lms.dto.GetLoanDto;
+import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,52 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/loans", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoanController {
-    private final LoanService loanService;
+    private final LoanService loanServiceImpl;
 
     public LoanController(LoanServiceImpl loanServiceImpl) {
-        this.loanService = loanServiceImpl;
+        this.loanServiceImpl = loanServiceImpl;
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllLoans(HttpSession session){
+        GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
+        if (sessionUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        } else if (!"Manager".equals(sessionUser.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+        }else {
+            return ResponseEntity.ok(loanServiceImpl.getAllLoans());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getLoanByID(@PathVariable Long id, HttpSession session){
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        //Checks if the user is not logged in
+        if(userLogged == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
+        }
+
+        //Checks if the user is a Manager
+        GetLoanDto foundLoan = loanServiceImpl.getLoanById(id, userLogged);
+        //Checks if the loan exists
+        if(foundLoan == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+        }
+        return ResponseEntity.ok(foundLoan);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteLoan(@PathVariable Long id, HttpSession session) {
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        if(userLogged == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
+        }
+
+        boolean deleted = loanServiceImpl.deleteLoan(id, userLogged);
+        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
     }
 
     /**
@@ -35,7 +79,7 @@ public class LoanController {
             return ResponseEntity.badRequest().build();
         if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty())
             return ResponseEntity.badRequest().build();
-        GetLoanDto updatedLoan = loanService.updateLoan(id, loanDetails);
+        GetLoanDto updatedLoan = loanServiceImpl.updateLoan(id, loanDetails);
         if (updatedLoan == null)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(updatedLoan);
@@ -55,7 +99,7 @@ public class LoanController {
         if (newLoan.getType() == null)
             return ResponseEntity.badRequest().build();
         try {
-            Loan loan = loanService.createLoan(newLoan);
+            Loan loan = loanServiceImpl.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(
                     loan.getId(),
                     loan.getAmount(),
@@ -77,7 +121,7 @@ public class LoanController {
      */
     @GetMapping(value = "/user/{userId}")
     public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId) {
-        List<GetLoanDto> foundLoan = loanService.getLoanByUserId(userId);
+        List<GetLoanDto> foundLoan = loanServiceImpl.getLoanByUserId(userId);
         if (foundLoan == null) {
             return ResponseEntity.notFound().build();
         }
@@ -111,7 +155,7 @@ public class LoanController {
      * @return ResponseEntity
      */
     public ResponseEntity<?> approveOrRejectLoan(Long loanId, Long statusId) {
-        GetLoanDto response = loanService.approveOrRejectLoan(loanId, statusId);
+        GetLoanDto response = loanServiceImpl.approveOrRejectLoan(loanId, statusId);
         if (response == null)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(response);

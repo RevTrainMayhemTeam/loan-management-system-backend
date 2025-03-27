@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
         User createdUser = userRepository.save(user);
         logger.info("User created successfully: {}", user);
         return new GetUserDto(
+                createdUser.getId(),
                 account.getEmail(),
                 createdUser.getFirstName(),
                 createdUser.getLastName(),
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
         List<GetUserDto> usersDto = new ArrayList<>();
         for (User user : users) {
             usersDto.add(new GetUserDto(
+                    user.getId(),
                     user.getAccount().getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
@@ -68,6 +71,7 @@ public class UserServiceImpl implements UserService {
         User foundUser = userRepository.findById(id).orElse(null);
         if (foundUser!=null){
             return new GetUserDto(
+                    foundUser.getId(),
                     foundUser.getAccount().getEmail(),
                     foundUser.getFirstName(),
                     foundUser.getLastName(),
@@ -95,14 +99,14 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userRepository.findById(id).orElse(null);
             if (updatedUser != null){
                 return new GetUserDto(
+                        updatedUser.getId(),
                         updatedUser.getAccount().getEmail(),
                         updatedUser.getFirstName(),
                         updatedUser.getLastName(),
                         updatedUser.getPhoneNumber(),
                         updatedUser.getAccount().getRole().getRoleName()
                 );
-            } else
-                return null;
+            } else return null;
         } else {
             logger.info("No user found");
             return null;
@@ -110,10 +114,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Long id){
-        return userRepository.findById(id).map(profile -> {
-            userRepository.delete(profile);
+    public boolean deleteUser(Long id, GetUserDto userLogged){
+        User userToDelete = userRepository.findById(id).orElse(null);
+        if(userToDelete != null && userLogged.getId().equals(userToDelete.getId())){
+            userRepository.delete(userToDelete);
             return true;
-        }).orElse(false);
+        }else{
+            return false;
+        }
     }
 }
