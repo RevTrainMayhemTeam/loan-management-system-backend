@@ -14,7 +14,9 @@ import com.mayhem.lms.repository.LoanTypeRepository;
 import com.mayhem.lms.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LoanServiceImpl implements LoanService{
@@ -64,24 +66,42 @@ public class LoanServiceImpl implements LoanService{
         loan.setLoanTypes(type);
 //        LoanStatus status = statusRepository.findById(newLoan.getStatusId()).orElseThrow(() -> new RuntimeException("Loan status not found"));
 //        Long defaultStatus = 1L;
-        LoanStatus status = new LoanStatus(1L, Status.PENDING.toString());
+//        LoanStatus status = new LoanStatus(1L, Status.PENDING.toString());
+        LoanStatus status = statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Loan status not found"));
         loan.setLoanStatus(status);
         return loanRepository.save(loan);
     }
 
     @Override
-    public GetLoanByUserIdDto getLoanByUserId(Long userId) {
-        Optional<Loan> loan = loanRepository.findByUsersId(userId);
-        if (loan.isPresent()) {
-            return new GetLoanByUserIdDto(
-                loan.get().getId(),
-                loan.get().getAmount(),
-                loan.get().getTerm(),
-                loan.get().getLoanTypes().getType(),
-                loan.get().getLoanStatus().getStatus(),
-                loan.get().getUsers().getId()
-            );
+    public List<GetLoanDto> getLoanByUserId(Long userId) {
+        Optional<List<Loan>> loans = loanRepository.findByUsersId(userId);
+        if (loans.isPresent()) {
+            return loans.get().stream().map(loan -> new GetLoanDto(
+                loan.getId(),
+                loan.getAmount(),
+                loan.getTerm(),
+                loan.getLoanTypes().getType(),
+                loan.getLoanStatus().getStatus(),
+                loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
+            )).collect(Collectors.toList());
         }
         return null;
     }
+
+//    @Override
+//    public GetLoanByUserIdDto getLoanByUserId(Long userId) {
+//        Optional<Loan> loan = loanRepository.findByUsersId(userId);
+//        if (loan.isPresent()) {
+//            return new GetLoanByUserIdDto(
+//                loan.get().getId(),
+//                loan.get().getAmount(),
+//                loan.get().getTerm(),
+//                loan.get().getLoanTypes().getType(),
+//                loan.get().getLoanStatus().getStatus(),
+//                loan.get().getUsers().getId()
+//            );
+//        }
+//        return null;
+//    }
+
 }

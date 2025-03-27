@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/loans", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoanController {
@@ -20,10 +22,7 @@ public class LoanController {
         this.loanService = loanServiceImpl;
     }
 
-    @PutMapping(
-            value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails) {
         if (loanDetails.getAmount() == null)
             return ResponseEntity.badRequest().build();
@@ -65,9 +64,10 @@ public class LoanController {
         }
     }
 
-    @GetMapping(value = "/{userId}")
-    public ResponseEntity<?> getLoanByUserId(@PathVariable Long userId) {
-        GetLoanByUserIdDto foundLoan = loanService.getLoanByUserId(userId);
+    @GetMapping(value = "/user/{userId}")
+    public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId) {
+//        GetLoanByUserIdDto foundLoan = loanService.getLoanByUserId(userId);
+        List<GetLoanDto> foundLoan = loanService.getLoanByUserId(userId);
         if (foundLoan == null) {
             return ResponseEntity.notFound().build();
         }
