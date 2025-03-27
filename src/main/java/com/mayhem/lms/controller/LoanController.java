@@ -84,6 +84,7 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
 
+        //Validate loan details
         logger.info("Updating loan with id: {}", id);
         if (loanDetails.getAmount() == null) {
             logger.error("Amount must not be null");
@@ -93,7 +94,6 @@ public class LoanController {
             logger.error("Term must not be null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Term must not be null");
         }
-//        if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty()) {
         if (loanDetails.getLoanTypes().getId() == null) {
             logger.error("Loan type must not be null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loan type must not be null");
@@ -121,13 +121,38 @@ public class LoanController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto newLoan) {
-        if (newLoan.getAmount() == null)
-            return ResponseEntity.badRequest().build();
-        if (newLoan.getTerm() == null)
-            return ResponseEntity.badRequest().build();
-        if (newLoan.getType() == null)
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> createLoan(@RequestBody CreateLoanDto newLoan, HttpSession session) {
+        //Check if user is logged in
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+        if (userLogged == null) {
+            logger.error("Not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+
+        if (newLoan.getUserId() != userLogged.getId()) {
+            logger.error("Unauthorized access to create loan for user Id: {}", newLoan.getUserId());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
+
+        logger.info("Creating a new loan");
+
+        //Validate loan details in payload
+        if (newLoan.getAmount() == null) {
+            logger.error("Amount must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount must not be null");
+        }
+        if (newLoan.getTerm() == null) {
+            logger.error("Loan term must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loan term must not be null");
+        }
+        if (newLoan.getType() == null) {
+            logger.error("Loan type must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loan type must not be null");
+        }
+        if (newLoan.getUserId() == null) {
+            logger.error("User id must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User id must not be null");
+        }
         try {
             Loan loan = loanServiceImpl.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(
@@ -150,7 +175,9 @@ public class LoanController {
      * @return
      */
     @GetMapping(value = "/user/{userId}")
-    public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<?>> getLoanByUserId(@PathVariable Long userId, HttpSession session) {
+
+
         List<GetLoanDto> foundLoan = loanServiceImpl.getLoanByUserId(userId);
         if (foundLoan == null) {
             return ResponseEntity.notFound().build();
