@@ -140,18 +140,22 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public List<GetLoanDto> getAllLoans() {
         List<Loan> loans = loanRepository.findAll();
-        List<GetLoanDto> loansDto = new ArrayList<>();
+        List<GetLoanDto> loanDto = new ArrayList<>();
         for (Loan loan : loans) {
-            loansDto.add(new GetLoanDto(
+            Optional<User> optionalUser = userRepository.findById(loan.getUsers().getId());
+
+            User user = optionalUser.get();
+            String userName = user.getFirstName() + " " + user.getLastName();
+            loanDto.add(new GetLoanDto(
                     loan.getId(),
                     loan.getAmount(),
                     loan.getTerm(),
                     loan.getLoanTypes().getType(),
                     loan.getLoanStatus().getStatus(),
-                    loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
+                    userName
             ));
         }
-        return loansDto;
+        return loanDto;
     }
 
     @Override
