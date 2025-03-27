@@ -202,8 +202,12 @@ public class LoanController {
      * @return approveOrRejectLoan
      */
     @PutMapping(value = "/{loanId}/reject")
-    public ResponseEntity rejectLoan(@PathVariable Long loanId) {
-        return approveOrRejectLoan(loanId, 3L);
+    public ResponseEntity rejectLoan(@PathVariable Long loanId, HttpSession session) {
+        //Check if user is logged in
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        logger.info("Loan rejected with id: {}", loanId);
+        return approveOrRejectLoan(loanId, 3L, userLogged);
     }
 
     /**
@@ -212,8 +216,12 @@ public class LoanController {
      * @return approveOrRejectLoan
      */
     @PutMapping(value = "/{loanId}/approve")
-    public ResponseEntity approveLoan(@PathVariable Long loanId) {
-        return approveOrRejectLoan(loanId, 2L);
+    public ResponseEntity approveLoan(@PathVariable Long loanId, HttpSession session) {
+        //Check if user is logged in
+        GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+
+        logger.info("Loan approved with id: {}", loanId);
+        return approveOrRejectLoan(loanId, 2L, userLogged);
     }
 
     /**
@@ -222,7 +230,18 @@ public class LoanController {
      * @param statusId
      * @return ResponseEntity
      */
-    public ResponseEntity<?> approveOrRejectLoan(Long loanId, Long statusId) {
+    public ResponseEntity<?> approveOrRejectLoan(Long loanId, Long statusId, GetUserDto userLogged) {
+        //Validate session
+        if (userLogged == null) {
+            logger.error("Not logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+        //Check if user is a manager
+        if(!userLogged.getRole().equals("Manager")) {
+            logger.error("Unauthorized access");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
+
         GetLoanDto response = loanServiceImpl.approveOrRejectLoan(loanId, statusId);
         if (response == null)
             return ResponseEntity.notFound().build();
