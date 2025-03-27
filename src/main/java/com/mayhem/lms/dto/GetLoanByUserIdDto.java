@@ -1,33 +1,32 @@
 package com.mayhem.lms.dto;
 
-public class GetLoanDto {
-
-    private Long id;
+public class GetLoanByUserIdDto {
+    private Long loanId;
     private Double amount;
     private Integer term;
     private String type;
     private String status;
-    private String clientName;
+    private Long userId;
 
-    public GetLoanDto() {
+    public GetLoanByUserIdDto() {
     }
-    public GetLoanDto(Long id, Double amount, Integer term, String type, String status, String clientName) {
-        this.id = id;
+
+    public GetLoanByUserIdDto(Long loanId, Double amount, Integer term, String type, String status, Long userId) {
+        this.loanId = loanId;
         this.amount = amount;
         this.term = term;
         this.type = type;
         this.status = status;
-        this.clientName = clientName;
+        this.userId = userId;
     }
 
-    public GetLoanDto(Long id, String status) {
-        this.id = id;
-        this.status = status;
+    public Long getLoanId() {
+        return loanId;
     }
 
-    public Long getId(){return id;}
-
-    public void setId(Long id){ this.id = id;}
+    public void setLoanId(Long loanId) {
+        this.loanId = loanId;
+    }
 
     public Double getAmount() {
         return amount;
@@ -52,19 +51,20 @@ public class GetLoanDto {
     public void setType(String type) {
         this.type = type;
     }
-    public String getStatus(){
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status){
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getClientName() {
-        return clientName;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

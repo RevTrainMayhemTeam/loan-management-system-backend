@@ -2,12 +2,12 @@ package com.mayhem.lms.service;
 
 import com.mayhem.lms.dto.AuthDto;
 import com.mayhem.lms.dto.RegisterDto;
-import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.Account;
 import com.mayhem.lms.model.AccountRole;
-import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.AccountRepository;
 import com.mayhem.lms.repository.RoleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
@@ -15,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
@@ -37,13 +39,13 @@ public class AccountServiceImpl implements AccountService {
         account.setEmail(newAccount.getEmail());
         account.setPassword(hashPassword);
         account.setRole(role);
-
+        logger.info("Account created: " + account);
         return accountRepository.save(account);
     }
 
     /**
-     *
-     * @param email user email
+     * Validate email format
+     * @param email email to validate
      * @return true if email matches regex, false otherwise
      */
     public boolean validateEmail(String email) {

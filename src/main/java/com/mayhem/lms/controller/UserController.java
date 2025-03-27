@@ -52,6 +52,12 @@ public class UserController {
         else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
     }
 
+    /**
+     * Update user details: first name, last name and phone number
+     * @param id
+     * @param userDetails
+     * @return
+     */
     @PutMapping("/{id}")
     public ResponseEntity<GetUserDto> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         if (userDetails.getFirstName() == null || userDetails.getFirstName().trim().isEmpty())
@@ -59,9 +65,8 @@ public class UserController {
         if (userDetails.getLastName() == null || userDetails.getLastName().trim().isEmpty())
             return ResponseEntity.badRequest().build();
         GetUserDto updatedUser = userService.updateUser(id, userDetails);
-        if(updatedUser == null){
+        if(updatedUser == null)
             return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(updatedUser);
     }
 

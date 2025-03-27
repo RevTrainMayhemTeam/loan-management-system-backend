@@ -20,6 +20,14 @@ public class GetUserDto {
         this.role = role;
     }
 
+    public GetUserDto(String email, String firstName, String lastName, String phoneNumber, String role) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
+
     public Long getId(){ return id;}
 
     public void setId(){ this.id = id;}

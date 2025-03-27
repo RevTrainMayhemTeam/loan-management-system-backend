@@ -32,6 +32,11 @@ public class LoanStatus {
         this.loans = loans;
     }
 
+    public LoanStatus(Long id, String status) {
+        this.status = status;
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,5 +59,13 @@ public class LoanStatus {
 
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
+    }
+
+    @Override
+    public String toString() {
+        return "LoanStatus{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

@@ -90,4 +90,16 @@ public class Loan {
     public void setLoanStatus(LoanStatus loanStatus) {
         this.loanStatus = loanStatus;
     }
+
+    @Override
+    public String toString() {
+        return "Loan{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", term=" + term +
+                ", users=" + users +
+                ", loanTypes=" + loanTypes +
+                ", loanStatus=" + loanStatus +
+                '}';
+    }
 }
