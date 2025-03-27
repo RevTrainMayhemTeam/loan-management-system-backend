@@ -14,4 +14,5 @@ public interface LoanService {
     Loan createLoan(CreateLoanDto loan);
     List<GetLoanDto> getLoanByUserId(Long userId);
     GetLoanDto approveOrRejectLoan(Long loanId, Long statusId);
+    public boolean deleteLoan(Long loanId, GetUserDto userLogged);
 }

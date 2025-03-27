@@ -30,11 +30,6 @@ public class LoanServiceImpl implements LoanService{
     private final LoanTypeRepository typeRepository;
     private final UserRepository userRepository;
 
-//    public LoanServiceImpl(LoanRepository loanRepository, UserRepository userRepository) {
-//        this.loanRepository = loanRepository;
-//        this.userRepository = userRepository;
-//    }
-
     public LoanServiceImpl(LoanRepository loanRepository, LoanStatusRepository statusRepository, LoanTypeRepository typeRepository, UserRepository userRepository) {
         this.loanRepository = loanRepository;
         this.statusRepository = statusRepository;
@@ -182,5 +177,18 @@ public class LoanServiceImpl implements LoanService{
                     usersName);
         }
         else return null;
+    }
+
+    @Override
+    public boolean deleteLoan(Long loanId, GetUserDto userLogged){
+        Loan loanToDelete = loanRepository.findById(loanId).orElse(null);
+        Long ownerId = loanToDelete.getUsers().getId();
+
+        if(userLogged.getId().equals(ownerId)){
+            loanRepository.delete(loanToDelete);
+            return true;
+        }else{
+            return false;
+        }
     }
 }
