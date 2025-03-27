@@ -44,13 +44,17 @@ public class LoanServiceImpl implements LoanService{
      * @return
      */
     @Override
-    public GetLoanDto updateLoan(Long id, Loan loanDetails) {
+    public GetLoanDto updateLoan(Long id, Loan loanDetails, GetUserDto session) {
         Loan existingLoan = loanRepository.findById(id).orElse(null);
+        if (existingLoan.getUsers().getId() != session.getId()) {
+            logger.error("Unauthorized access attempt for userId: {} to update loan with id: {}", session.getId(), id);
+            return null;
+        }
+
         if (existingLoan != null) {
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
             existingLoan.setLoanTypes(loanDetails.getLoanTypes());
-            logger.info("Loan with loanId: {} updated successfully", id);
             Loan updatedLoan = loanRepository.save(existingLoan);
 
             return new GetLoanDto(

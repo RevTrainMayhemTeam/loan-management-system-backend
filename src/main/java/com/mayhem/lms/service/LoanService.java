@@ -11,7 +11,7 @@ import java.util.List;
 public interface LoanService {
     List<GetLoanDto> getAllLoans();
     GetLoanDto getLoanById(Long id, GetUserDto userLogged);
-    GetLoanDto updateLoan(Long id, Loan loan);
+    GetLoanDto updateLoan(Long id, Loan loan, GetUserDto userLogged);
     Loan createLoan(CreateLoanDto loan);
     List<GetLoanDto> getLoanByUserId(Long userId);
     GetLoanDto approveOrRejectLoan(Long loanId, Long statusId);

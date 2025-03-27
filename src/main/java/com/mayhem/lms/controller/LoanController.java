@@ -76,23 +76,42 @@ public class LoanController {
      * @return
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetLoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails, HttpSession session) {
+    public ResponseEntity<?> updateLoan(@PathVariable Long id, @RequestBody Loan loanDetails, HttpSession session) {
+        //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
         if (userLogged == null) {
             logger.error("Not logged in");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
 
-//        if ()
-        if (loanDetails.getAmount() == null)
-            return ResponseEntity.badRequest().build();
-        if (loanDetails.getTerm() == null)
-            return ResponseEntity.badRequest().build();
-        if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty())
-            return ResponseEntity.badRequest().build();
-        GetLoanDto updatedLoan = loanServiceImpl.updateLoan(id, loanDetails);
-        if (updatedLoan == null)
-            return ResponseEntity.notFound().build();
+        logger.info("Updating loan with id: {}", id);
+        if (loanDetails.getAmount() == null) {
+            logger.error("Amount must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount must not be null");
+        }
+        if (loanDetails.getTerm() == null) {
+            logger.error("Term must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Term must not be null");
+        }
+//        if (loanDetails.getLoanTypes() == null || loanDetails.getLoanTypes().getId() == null || loanDetails.getLoanTypes().getType() == null || loanDetails.getLoanTypes().getType().trim().isEmpty()) {
+        if (loanDetails.getLoanTypes().getId() == null) {
+            logger.error("Loan type must not be null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loan type must not be null");
+        }
+
+        GetLoanDto updatedLoan = null;
+        try {
+            updatedLoan = loanServiceImpl.updateLoan(id, loanDetails, userLogged);
+        } catch (NullPointerException e) {
+            logger.error("Loan not found with id: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No loan found with id:" + id);
+        }
+
+        if (updatedLoan == null) {
+            logger.error("Unauthorized access to update loan {}", id);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to update loan ");
+        }
+        logger.info("Loan with id: {} updated successfully", id);
         return ResponseEntity.ok(updatedLoan);
     }
 
