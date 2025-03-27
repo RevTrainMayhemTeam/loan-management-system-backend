@@ -23,7 +23,7 @@ public class LoanController {
         this.loanServiceImpl = loanServiceImpl;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<?> getAllLoans(HttpSession session){
         GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
         if (sessionUser == null) {
