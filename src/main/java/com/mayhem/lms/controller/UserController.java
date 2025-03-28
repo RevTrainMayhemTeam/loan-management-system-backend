@@ -61,12 +61,16 @@ public class UserController {
             logger.info("Get user by id");
             GetUserDto foundUser = userService.getUserById(id);
             if(foundUser == null){
-                logger.info("User not found, id: {}", userService.getUserById(id));
+                logger.info("User not found, id: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
+            logger.info("User id {} found", id);
             return ResponseEntity.ok(foundUser);
         }
-        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+        else {
+            logger.info("Unauthorized access to user with id {}", id);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+        }
     }
 
     /**
@@ -101,6 +105,8 @@ public class UserController {
             if (updatedUser == null)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             logger.info("User with id {} updated", id);
+            //Update session with new user details
+            session.setAttribute("user", updatedUser);
             return ResponseEntity.ok(updatedUser);
         }
         logger.info("Unauthorized access while updating user with id {}", id);

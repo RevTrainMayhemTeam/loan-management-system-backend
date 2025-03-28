@@ -103,7 +103,6 @@ public class LoanServiceImpl implements LoanService{
     public List<GetLoanDto> getLoanByUserId(Long userId) {
         Optional<List<Loan>> loans = loanRepository.findByUsersId(userId);
         if (loans.isPresent()) {
-            logger.info("Loans found for userId {}", userId);
             return loans.get().stream().map(loan -> new GetLoanDto(
                     loan.getId(),
                     loan.getAmount(),
@@ -113,7 +112,6 @@ public class LoanServiceImpl implements LoanService{
                     loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
             )).collect(Collectors.toList());
         }
-        logger.info("No loans found for userId {}", userId);
         return null;
     }
 
@@ -211,10 +209,15 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public boolean deleteLoan(Long loanId, GetUserDto userLogged){
         Loan loanToDelete = loanRepository.findById(loanId).orElse(null);
+        if (loanToDelete == null) {
+            logger.error("Loan with id {} not found", loanId);
+            return false;
+        }
+
         Long ownerId = loanToDelete.getUsers().getId();
 
         if (loanToDelete.getLoanStatus().getStatus().equals("Approved")) {
-            logger.error("Loan with id {} cannot be deleted because it is already approved", loanId);
+            logger.error("Loan with id {} cannot be deleted because it is already approved or access denied", loanId);
             return false;
         }
 

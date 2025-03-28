@@ -120,7 +120,9 @@ public class AuthController {
     public ResponseEntity<String> logout(HttpSession session){
         GetUserDto loggedUser = (GetUserDto) session.getAttribute("user");
         if (loggedUser != null){
+            logger.info("Closing session for userId: {}", loggedUser.getId());
             session.invalidate();
+            logger.info("Session closed");
             return ResponseEntity.ok("Logged out successfully");
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active session found");
