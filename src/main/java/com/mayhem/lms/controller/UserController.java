@@ -97,8 +97,15 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUserProfile(@PathVariable Long id, HttpSession session) {
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
+        //Checks if the user is not logged in
+        if(userLogged == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+        }
+        if (!id.equals(userLogged.getId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
 
-        boolean deleted = userService.deleteUser(id, userLogged);
+        boolean deleted = userService.deleteUser(id);
         logger.info("Deleting user with id: {}", id);
         if (deleted){
             session.invalidate();
