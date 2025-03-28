@@ -88,6 +88,7 @@ public class UserController {
             if (updatedUser == null)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             logger.info("User with id {} updated", id);
+            session.setAttribute("user", updatedUser);
             return ResponseEntity.ok(updatedUser);
         }
         logger.info("Unauthorized access");
