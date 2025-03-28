@@ -113,13 +113,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(Long id, GetUserDto userLogged){
+    public boolean deleteUser(Long id){
         User userToDelete = userRepository.findById(id).orElse(null);
-        if(userToDelete != null && userLogged.getId().equals(userToDelete.getId())){
-            userRepository.delete(userToDelete);
-            return true;
-        }else{
-            return false;
-        }
+        userRepository.delete(userToDelete);
+        return true;
     }
 }
