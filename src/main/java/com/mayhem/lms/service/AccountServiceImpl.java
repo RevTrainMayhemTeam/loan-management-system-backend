@@ -26,6 +26,11 @@ public class AccountServiceImpl implements AccountService {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Create a new account
+     * @param newAccount
+     * @return
+     */
     @Override
     public Account createAccount(RegisterDto newAccount) {
         //encrypt password with Bcrypt
@@ -39,7 +44,6 @@ public class AccountServiceImpl implements AccountService {
         account.setEmail(newAccount.getEmail());
         account.setPassword(hashPassword);
         account.setRole(role);
-        logger.info("Account created: " + account);
         return accountRepository.save(account);
     }
 
@@ -55,12 +59,22 @@ public class AccountServiceImpl implements AccountService {
                 .matches();
     }
 
+    /**
+     * Get account by email
+     * @param email
+     * @return
+     */
     @Override
     public Account getAccountByEmail(String email) {
         Optional<Account> foundAccount = accountRepository.findByEmail(email);
         return foundAccount.orElse(null);
     }
 
+    /**
+     * Verify user credentials
+     * @param userCredentials
+     * @return
+     */
     @Override
     public Boolean verifyCredentials(AuthDto userCredentials) {
         Optional<Account> account = accountRepository.findByEmail(userCredentials.getEmail());

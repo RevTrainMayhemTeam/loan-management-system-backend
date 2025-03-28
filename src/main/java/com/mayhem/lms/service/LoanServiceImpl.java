@@ -146,6 +146,10 @@ public class LoanServiceImpl implements LoanService{
     }
 
 
+    /**
+     * Get all loans
+     * @return
+     */
     @Override
     public List<GetLoanDto> getAllLoans() {
         List<Loan> loans = loanRepository.findAll();
@@ -167,6 +171,12 @@ public class LoanServiceImpl implements LoanService{
         return loanDto;
     }
 
+    /**
+     * Get loan by id
+     * @param id
+     * @param userLogged
+     * @return
+     */
     @Override
     public GetLoanDto getLoanById(Long id, GetUserDto userLogged){
         Loan foundedLoan = loanRepository.findById(id).orElse(null);
@@ -192,6 +202,12 @@ public class LoanServiceImpl implements LoanService{
         else return null;
     }
 
+    /**
+     * Delete loan
+     * @param loanId
+     * @param userLogged
+     * @return
+     */
     @Override
     public boolean deleteLoan(Long loanId, GetUserDto userLogged){
         Loan loanToDelete = loanRepository.findById(loanId).orElse(null);

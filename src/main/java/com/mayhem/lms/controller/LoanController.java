@@ -27,6 +27,11 @@ public class LoanController {
         this.loanServiceImpl = loanServiceImpl;
     }
 
+    /**
+     * Get all loans, only manager can get all loans
+     * @param session
+     * @return
+     */
     @GetMapping
     public ResponseEntity<?> getAllLoans(HttpSession session){
         GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
@@ -39,6 +44,12 @@ public class LoanController {
         }
     }
 
+    /**
+     * Get loan by id, user can get its own loan or a manager can get any loan
+     * @param id
+     * @param session
+     * @return
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanByID(@PathVariable Long id, HttpSession session){
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
@@ -57,6 +68,12 @@ public class LoanController {
         return ResponseEntity.ok(foundLoan);
     }
 
+    /**
+     * Delete loan, user can delete its own loan only if it is not approved
+     * @param id
+     * @param session
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLoan(@PathVariable Long id, HttpSession session) {
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
