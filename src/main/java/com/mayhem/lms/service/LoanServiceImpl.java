@@ -1,13 +1,13 @@
 package com.mayhem.lms.service;
 
 import com.mayhem.lms.dto.CreateLoanDto;
+import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.GetUserDto;
+import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.LoanStatus;
 import com.mayhem.lms.model.LoanType;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.LoanRepository;
-import com.mayhem.lms.dto.GetLoanDto;
-import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.repository.LoanStatusRepository;
 import com.mayhem.lms.repository.LoanTypeRepository;
 import com.mayhem.lms.repository.UserRepository;
@@ -103,7 +103,6 @@ public class LoanServiceImpl implements LoanService{
     public List<GetLoanDto> getLoanByUserId(Long userId) {
         Optional<List<Loan>> loans = loanRepository.findByUsersId(userId);
         if (loans.isPresent()) {
-            logger.info("Loans found for userId {}", userId);
             return loans.get().stream().map(loan -> new GetLoanDto(
                     loan.getId(),
                     loan.getAmount(),
@@ -113,7 +112,6 @@ public class LoanServiceImpl implements LoanService{
                     loan.getUsers().getFirstName() + " " + loan.getUsers().getLastName()
             )).collect(Collectors.toList());
         }
-        logger.info("No loans found for userId {}", userId);
         return null;
     }
 
@@ -146,6 +144,10 @@ public class LoanServiceImpl implements LoanService{
     }
 
 
+    /**
+     * Get all loans
+     * @return
+     */
     @Override
     public List<GetLoanDto> getAllLoans() {
         List<Loan> loans = loanRepository.findAll();
@@ -167,6 +169,12 @@ public class LoanServiceImpl implements LoanService{
         return loanDto;
     }
 
+    /**
+     * Get loan by id
+     * @param id
+     * @param userLogged
+     * @return
+     */
     @Override
     public GetLoanDto getLoanById(Long id, GetUserDto userLogged){
         Loan foundedLoan = loanRepository.findById(id).orElse(null);
@@ -192,13 +200,24 @@ public class LoanServiceImpl implements LoanService{
         else return null;
     }
 
+    /**
+     * Delete loan
+     * @param loanId
+     * @param userLogged
+     * @return
+     */
     @Override
     public boolean deleteLoan(Long loanId, GetUserDto userLogged){
         Loan loanToDelete = loanRepository.findById(loanId).orElse(null);
+        if (loanToDelete == null) {
+            logger.error("Loan with id {} not found", loanId);
+            return false;
+        }
+
         Long ownerId = loanToDelete.getUsers().getId();
 
         if (loanToDelete.getLoanStatus().getStatus().equals("Approved")) {
-            logger.error("Loan with id {} cannot be deleted because it is already approved", loanId);
+            logger.error("Loan with id {} cannot be deleted because it is already approved or access denied", loanId);
             return false;
         }
 

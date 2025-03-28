@@ -1,13 +1,13 @@
 package com.mayhem.lms.controller;
 
-import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.dto.AuthDto;
+import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
 import com.mayhem.lms.service.AccountServiceImpl;
 import com.mayhem.lms.service.UserServiceImpl;
-import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,15 +38,15 @@ public class AuthController {
      * @return
      */
     @PostMapping(path = "/register")
-    public @ResponseBody ResponseEntity<GetUserDto> registerUser(@Valid @RequestBody RegisterDto newUser){
-        if (newUser.getEmail().trim().isEmpty() || newUser.getEmail() == null)
-            return ResponseEntity.badRequest().build();
-        if (newUser.getPassword().trim().isEmpty() || newUser.getPassword() == null)
-            return ResponseEntity.badRequest().build();
-        if (newUser.getFirstName().trim().isEmpty() || newUser.getFirstName() == null)
-            return ResponseEntity.badRequest().build();
-        if (newUser.getLastName().trim().isEmpty() || newUser.getLastName() == null)
-            return ResponseEntity.badRequest().build();
+    public @ResponseBody ResponseEntity<?> registerUser(@Valid @RequestBody RegisterDto newUser){
+        if (newUser.getEmail() == null || newUser.getEmail().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+        if (newUser.getPassword() == null || newUser.getPassword().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is required");
+        if (newUser.getFirstName() == null || newUser.getFirstName().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("First name is required");
+        if (newUser.getLastName() == null || newUser.getLastName().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Last name is required");
         if (newUser.getRoleId() == null)
             newUser.setRoleId(2L);
         Account acc = accountService.createAccount(newUser);
@@ -70,8 +70,19 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Login user with email and password
+     * @param userCredentials
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody AuthDto userCredentials, HttpSession session){
+        if ( userCredentials.getEmail() == null || userCredentials.getEmail().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is required");
+        if (userCredentials.getPassword() == null || userCredentials.getPassword().trim().isEmpty())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is required");
+
         if (accountService.verifyCredentials(userCredentials)) {
             Account account = accountService.getAccountByEmail(userCredentials.getEmail());
             GetUserDto loggedUser = userService.getUserById(account.getUser().getId());
@@ -84,6 +95,11 @@ public class AuthController {
         }
     }
 
+    /**
+     * Check if the user is logged in
+     * @param session
+     * @return
+     */
     @GetMapping("/session-check")
     public ResponseEntity<?> checkSession(HttpSession session) {
         GetUserDto loggedUser = (GetUserDto) session.getAttribute("user");
@@ -95,15 +111,21 @@ public class AuthController {
     }
 
 
+    /**
+     * Logout user
+     * @param session
+     * @return
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session){
         GetUserDto loggedUser = (GetUserDto) session.getAttribute("user");
         if (loggedUser != null){
+            logger.info("Closing session for userId: {}", loggedUser.getId());
             session.invalidate();
+            logger.info("Session closed");
             return ResponseEntity.ok("Logged out successfully");
         } else{
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active session found");
         }
     }
-
 }

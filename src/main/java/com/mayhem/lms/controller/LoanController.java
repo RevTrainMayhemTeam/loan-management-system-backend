@@ -4,14 +4,15 @@ import com.mayhem.lms.dto.CreateLoanDto;
 import com.mayhem.lms.dto.GetLoanDto;
 import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.model.Loan;
+import com.mayhem.lms.service.LoanService;
 import com.mayhem.lms.service.LoanServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -26,18 +27,30 @@ public class LoanController {
         this.loanServiceImpl = loanServiceImpl;
     }
 
+    /**
+     * Get all loans, only manager can get all loans
+     * @param session
+     * @return
+     */
     @GetMapping
     public ResponseEntity<?> getAllLoans(HttpSession session){
         GetUserDto sessionUser = (GetUserDto) session.getAttribute("user");
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
-        } else if (!"Manager".equals(sessionUser.getRole())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
-        }else {
-            return ResponseEntity.ok(loanServiceImpl.getAllLoans());
         }
+        if (!"Manager".equals(sessionUser.getRole())) {
+            logger.info("Access denied to get all loans");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+        }
+        return ResponseEntity.ok(loanServiceImpl.getAllLoans());
     }
 
+    /**
+     * Get loan by id, user can get its own loan or a manager can get any loan
+     * @param id
+     * @param session
+     * @return
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanByID(@PathVariable Long id, HttpSession session){
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
@@ -47,15 +60,23 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User is not logged in :(");
         }
 
-        //Checks if the user is a Manager
+        //Checks if the user is a manager or owner user of the loan
         GetLoanDto foundLoan = loanServiceImpl.getLoanById(id, userLogged);
         //Checks if the loan exists
         if(foundLoan == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+            logger.info("Loan with id: {} not found or invalid credentials", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid credentials or loan not found");
         }
+        logger.info("Loan id {} found for user id: {}", id, userLogged.getId());
         return ResponseEntity.ok(foundLoan);
     }
 
+    /**
+     * Delete loan, user can delete its own loan only if it is not approved
+     * @param id
+     * @param session
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteLoan(@PathVariable Long id, HttpSession session) {
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
@@ -65,7 +86,7 @@ public class LoanController {
         }
 
         boolean deleted = loanServiceImpl.deleteLoan(id, userLogged);
-        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials or loan is active");
+        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Loan not found or is approved");
     }
 
     /**
@@ -79,7 +100,6 @@ public class LoanController {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
         if (userLogged == null) {
-            logger.error("Not logged in");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
 
@@ -107,8 +127,7 @@ public class LoanController {
         }
 
         if (updatedLoan == null) {
-            logger.error("Unauthorized access to update loan {}", id);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to update loan ");
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access to update loan ");
         }
         logger.info("Loan with id: {} updated successfully", id);
         return ResponseEntity.ok(updatedLoan);
@@ -124,22 +143,15 @@ public class LoanController {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
         if (userLogged == null) {
-            logger.error("Not logged in");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         }
-
-        if (newLoan.getUserId() != userLogged.getId()) {
-            logger.error("Unauthorized access to create loan for user Id: {}", newLoan.getUserId());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
-        }
-
-        logger.info("Creating a new loan");
 
         //Validate loan details in payload
         if (newLoan.getAmount() == null) {
             logger.error("Amount must not be null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Amount must not be null");
         }
+
         if (newLoan.getTerm() == null) {
             logger.error("Loan term must not be null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loan term must not be null");
@@ -152,6 +164,16 @@ public class LoanController {
             logger.error("User id must not be null");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User id must not be null");
         }
+
+        //Check if user owns loan
+        if (newLoan.getUserId() != userLogged.getId()) {
+            logger.error("Unauthorized access to create loan for user Id: {}", newLoan.getUserId());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
+
+        logger.info("Creating a new loan");
+
+
         try {
             Loan loan = loanServiceImpl.createLoan(newLoan);
             GetLoanDto response = new GetLoanDto(
@@ -178,10 +200,10 @@ public class LoanController {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
         if (userLogged == null) {
-            logger.error("Not logged in");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        logger.info("Searching for loans for user id: {}", userId);
         //Check if user is either the owner of the loans or a manager
         if (!userId.equals(userLogged.getId()) && !"Manager".equals(userLogged.getRole())) {
             logger.error("Unauthorized access to get loans for userId: {}, userSessionId: {}", userId, userLogged.getId());
@@ -189,9 +211,11 @@ public class LoanController {
         }
 
         List<GetLoanDto> foundLoan = loanServiceImpl.getLoanByUserId(userId);
-        if (foundLoan == null) {
+        if (foundLoan == null || foundLoan.isEmpty()) {
+            logger.info("No loans found for user id {}", userId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        logger.info("Loans found for user id {}", userId);
         return ResponseEntity.ok(foundLoan);
     }
 
@@ -205,7 +229,6 @@ public class LoanController {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
 
-        logger.info("Loan rejected with id: {}", loanId);
         return approveOrRejectLoan(loanId, 3L, userLogged);
     }
 
@@ -219,7 +242,6 @@ public class LoanController {
         //Check if user is logged in
         GetUserDto userLogged = (GetUserDto) session.getAttribute("user");
 
-        logger.info("Loan approved with id: {}", loanId);
         return approveOrRejectLoan(loanId, 2L, userLogged);
     }
 
@@ -237,7 +259,7 @@ public class LoanController {
         }
         //Check if user is a manager
         if(!userLogged.getRole().equals("Manager")) {
-            logger.error("Unauthorized access");
+            logger.error("Unauthorized access, cannot approve or reject loan {}", loanId);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
         }
 

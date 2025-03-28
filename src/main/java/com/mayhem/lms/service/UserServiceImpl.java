@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(newUser.getPhoneNumber());
         user.setAccount(account);
         User createdUser = userRepository.save(user);
-        logger.info("User created successfully: {}", user);
+        logger.info("User created successfully with id: {}", user.getId());
         return new GetUserDto(
                 createdUser.getId(),
                 account.getEmail(),
@@ -50,6 +49,10 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    /**
+     * Find all users
+     * @return
+     */
     @Override
     public List<GetUserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
@@ -67,6 +70,11 @@ public class UserServiceImpl implements UserService {
         return usersDto;
     }
 
+    /**
+     * Find a user by id
+     * @param id
+     * @return
+     */
     @Override
     public GetUserDto getUserById(Long id){
         User foundUser = userRepository.findById(id).orElse(null);
@@ -113,6 +121,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * Delete a user
+     * @param id
+     * @return
+     */
     @Override
     public boolean deleteUser(Long id){
         User userToDelete = userRepository.findById(id).orElse(null);

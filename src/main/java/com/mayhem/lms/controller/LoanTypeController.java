@@ -19,8 +19,13 @@ public class LoanTypeController {
         this.loanTypeService = loanTypeService;
     }
 
+    /**
+     * Endpoint to get all loan types.
+     *
+     * @return List of all loan types.
+     */
     @GetMapping
-    public ResponseEntity<List<GetLoanTypesDto>> getAllLoanTypes(){
+    public ResponseEntity<List<GetLoanTypesDto>> getAllLoanTypes() {
         return ResponseEntity.ok().body(loanTypeService.getAllLoanTypes());
     }
 }

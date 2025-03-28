@@ -17,6 +17,10 @@ public class LoanTypeServiceImpl implements LoanTypeService{
         this.loanTypesRepository = loanTypesRepository;
     }
 
+    /**
+     * Retrieve all loan types from the database and convert them into GetLoanTypesDto objects
+     * @return List of GetLoanTypesDto
+     */
     @Override
     public List<GetLoanTypesDto> getAllLoanTypes() {
         List<LoanType> types = loanTypesRepository.findAll();
