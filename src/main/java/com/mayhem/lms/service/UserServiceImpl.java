@@ -3,6 +3,7 @@ package com.mayhem.lms.service;
 import com.mayhem.lms.dto.GetUserDto;
 import com.mayhem.lms.dto.RegisterDto;
 import com.mayhem.lms.model.Account;
+import com.mayhem.lms.model.Loan;
 import com.mayhem.lms.model.User;
 import com.mayhem.lms.repository.UserRepository;
 import org.slf4j.Logger;
@@ -115,7 +116,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(Long id){
         User userToDelete = userRepository.findById(id).orElse(null);
+        logger.info("Deleting user with id: {}", id);
+        List<?> userLoans = userToDelete.getLoans();
+        boolean hasApprovedLoans = userLoans.stream()
+                .anyMatch(loan -> ((Loan) loan).getLoanStatus().getStatus().equals("Approved"));
+        if (hasApprovedLoans) {
+            logger.info("User has active loans, cannot delete");
+            return false;
+        }
         userRepository.delete(userToDelete);
+        logger.info("User with id {} deleted", id);
         return true;
     }
 }

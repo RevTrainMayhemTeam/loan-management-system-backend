@@ -66,7 +66,7 @@ public class LoanController {
         }
 
         boolean deleted = loanServiceImpl.deleteLoan(id, userLogged);
-        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+        return deleted ? ResponseEntity.ok("Loan successfully deleted") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials or loan is active");
     }
 
     /**
