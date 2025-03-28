@@ -106,14 +106,10 @@ public class UserController {
         }
 
         boolean deleted = userService.deleteUser(id);
-        logger.info("Deleting user with id: {}", id);
         if (deleted){
             session.invalidate();
-            logger.info("User with id {} deleted", id);
-            return ResponseEntity.ok("User successfully deleted");
-        }else{
-            logger.info("Cannot delete user: {} invalid credentials", id);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not the right credentials :(");
+            return ResponseEntity.status(HttpStatus.OK).body("User successfully deleted");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User has active loans, cannot delete");
     }
 }

@@ -54,7 +54,12 @@ public class LoanServiceImpl implements LoanService{
         if (existingLoan != null) {
             existingLoan.setAmount(loanDetails.getAmount());
             existingLoan.setTerm(loanDetails.getTerm());
-            existingLoan.setLoanTypes(loanDetails.getLoanTypes());
+
+            // Get loanType by id
+            LoanType loanType = typeRepository.findById(loanDetails.getLoanTypes().getId())
+                    .orElseThrow(() -> new RuntimeException("Loan type not found"));
+            existingLoan.setLoanTypes(loanType);
+
             Loan updatedLoan = loanRepository.save(existingLoan);
 
             return new GetLoanDto(
@@ -192,11 +197,16 @@ public class LoanServiceImpl implements LoanService{
         Loan loanToDelete = loanRepository.findById(loanId).orElse(null);
         Long ownerId = loanToDelete.getUsers().getId();
 
-        if(userLogged.getId().equals(ownerId)){
-            loanRepository.delete(loanToDelete);
-            return true;
-        }else{
+        if (loanToDelete.getLoanStatus().getStatus().equals("Approved")) {
+            logger.error("Loan with id {} cannot be deleted because it is already approved", loanId);
             return false;
         }
+
+        if(userLogged.getId().equals(ownerId)){
+            logger.info("Loan with id {} deleted successfully", loanId);
+            loanRepository.delete(loanToDelete);
+            return true;
+        }
+        return false;
     }
 }
