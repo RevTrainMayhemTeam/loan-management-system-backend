@@ -36,3 +36,6 @@ build/
 main/java/resources/application.properties
 application.properties
 *.properties
+
+#SSH keys
+Loan-Management-System-SSHKeys.pem

@@ -16,7 +16,7 @@ public class CorsConfig {
                 // Apply CORS configuration to all endpoints
                 registry.addMapping("/**")
                         // Specify allowed origins. Replace with your front-end's URL.
-                        .allowedOriginPatterns("http://127.0.0.1:5500", "http://localhost:5173")
+                        .allowedOriginPatterns("http://127.0.0.1:5500", "http://loan-management-system-frontend.s3-website-us-east-1.amazonaws.com")
                         // Allow specific HTTP methods
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         // Allow all headers
