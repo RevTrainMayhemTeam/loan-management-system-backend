@@ -49,17 +49,6 @@ pipeline {
             }
         }
 
-        stage('Inject application.properties') {
-            steps {
-                // Fix permissions in case directory is owned by root
-                sh 'chmod -R u+w backend/src/main/resources/ || true'
-
-                withCredentials([file(credentialsId: 'spring-boot-config', variable: 'CONFIG_FILE')]) {
-                    sh 'cp $CONFIG_FILE backend/src/main/resources/application.properties'
-                }
-            }
-        }
-
         stage('Build Spring Boot JAR') {
             steps {
                 dir('backend') {
