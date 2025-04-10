@@ -34,6 +34,12 @@ pipeline {
         }
 
         stage('Build React App') {
+            agent {
+                docker {
+                    image 'node:18'
+                    args '-u root:root'
+                }
+            }
             steps {
                 dir('frontend') {
                     sh 'npm install'
