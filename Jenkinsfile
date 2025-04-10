@@ -83,7 +83,7 @@ pipeline {
                       # Build and run the new container
                       ssh -o StrictHostKeyChecking=no -i $EC2_KEY ec2-user@54.144.224.97 "
                           cd /home/ec2-user/loan-management-system &&
-                          docker build --no-cache -t loan-management-system . &&
+                          docker build -t loan-management-system . &&
                           docker run -d --name lms-container -p 8080:8080 loan-management-system
                       "
                   """
