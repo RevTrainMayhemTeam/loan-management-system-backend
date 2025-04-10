@@ -64,7 +64,7 @@ pipeline {
                         chmod 400 $EC2_KEY
                         ssh -o StrictHostKeyChecking=no -i $EC2_KEY ec2-user@54.144.224.97 "mkdir -p loan-management-system"
                         scp -o StrictHostKeyChecking=no -i $EC2_KEY backend/Dockerfile ec2-user@54.144.224.97:/home/ec2-user/loan-management-system/
-                        scp -o StrictHostKeyChecking=no -i $EC2_KEY backend/target/SpringTodoApp-0.0.1-SNAPSHOT.jar ec2-user@54.144.224.97:/home/ec2-user/loan-management-system/
+                        scp -o StrictHostKeyChecking=no -i $EC2_KEY backend/target/loan-management-system-0.0.1-SNAPSHOT.jar ec2-user@54.144.224.97:/home/ec2-user/loan-management-system/
                     '''
                 }
             }
