@@ -73,7 +73,7 @@ pipeline {
         stage('Deploy Docker Container on EC2') {
            stage('Deploy Docker Container on EC2') {
              steps {
-                 withCredentials([file(credentialsId: 'Loan-Management-System-SSHKeys', variable: 'EC2_KEY')]) {
+                 withCredentials([file(credentialsId: 'lms-ssh-keys', variable: 'EC2_KEY')]) {
                      sh """
                          # Stop and remove any existing container (ignore errors if it doesn't exist)
                          ssh -o StrictHostKeyChecking=no -i $EC2_KEY ec2-user@54.144.224.97 "
