@@ -59,7 +59,7 @@ pipeline {
 
         stage('Copy Project to EC2') {
             steps {
-                withCredentials([file(credentialsId: 'Loan-Management-System-SSHKeys', variable: 'EC2_KEY')]) {
+                withCredentials([file(credentialsId: 'lms-ssh-keys', variable: 'EC2_KEY')]) {
                     sh '''
                         chmod 400 $EC2_KEY
                         ssh -o StrictHostKeyChecking=no -i $EC2_KEY ec2-user@54.144.224.97 "mkdir -p loan-management-system"
